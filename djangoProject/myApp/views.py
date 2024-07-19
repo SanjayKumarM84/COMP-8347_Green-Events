@@ -1,24 +1,26 @@
 import traceback
 import os
 from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Event, Profile, Registration
-from .forms import EventForm, UserRegistrationForm, ProfileForm
+from .forms import EventForm, UserRegistrationForm, ProfileForm, PasswordResetForm, SetPasswordForm
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.encoding import force_bytes, force_str
+from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import ListView, DetailView
 import random
 from twilio.rest import Client
-
+# Load environment variables from .env file
+load_dotenv()
 
 class HomeView(ListView):
     model = Event
@@ -120,6 +122,79 @@ def send_otp_sms(receiver_phone_number, otp_code):
 
     print(f"OTP sent to {receiver_phone_number}. Message SID: {message.sid}")
 
+
+def send_otp_sms(receiver_phone_number, otp_code):
+    account_sid = os.getenv('ACCOUNT_SID')
+    auth_token = os.getenv('AUTH_TOKEN')
+    twilio_phone_number = os.getenv('TWILIO_PHONE_NUMBER')
+
+    client = Client(account_sid, auth_token)
+
+    message = client.messages.create(
+        body=f'Your OTP code is {otp_code}',
+        from_=twilio_phone_number,
+        to=receiver_phone_number
+    )
+
+    print(f"OTP sent to {receiver_phone_number}. Message SID: {message.sid}")
+
+
+def request_otp(request):
+    if request.method == 'POST':
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            phone_number = form.cleaned_data['phone_number']
+            if not phone_number.startswith('+1'):
+                phone_number = '+1' + phone_number
+            try:
+                user = User.objects.get(profile__phone_number=phone_number)
+                otp = generate_otp()
+                user.profile.otp = otp
+                user.profile.save()
+                send_otp_sms(phone_number, otp)
+                return redirect('verify_otp', uidb64=urlsafe_base64_encode(force_bytes(user.pk)))
+            except User.DoesNotExist:
+                form.add_error('phone_number', 'Phone number not registered.')
+    else:
+        form = PasswordResetForm()
+    return render(request, 'password_reset.html', {'form': form})
+
+
+def verify_otp(request, uidb64):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if request.method == 'POST':
+        otp = request.POST['otp']
+        if user is not None and user.profile.otp == otp:
+            return redirect('reset_password', uidb64=uidb64)
+        else:
+            return HttpResponse('Invalid OTP')
+    return render(request, 'password_reset_confirm.html', {'uidb64': uidb64})
+
+
+def reset_password(request, uidb64):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if request.method == 'POST':
+        form = SetPasswordForm(user, request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('password_reset_complete')
+    else:
+        form = SetPasswordForm(user)
+    return render(request, 'password_reset_confirm.html', {'form': form})
+
+
+def password_reset_complete(request):
+    return render(request, 'password_reset_complete.html')
 
 @login_required
 def register_event(request, event_id):

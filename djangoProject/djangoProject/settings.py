@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from os import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -131,3 +132,10 @@ LOGIN_URL = '/login/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
+env = environ.env()
+environ.env.read_env()
+
+ACCOUNT_SID = env('ACCOUNT_SID')
+AUTH_TOKEN = env('AUTH_TOKEN')
+TWILIO_PHONE_NUMBER = env('TWILIO_PHONE_NUMBER')

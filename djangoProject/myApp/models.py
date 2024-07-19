@@ -2,17 +2,15 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-# Create your models here.
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
     past_events = models.ManyToManyField('Event', related_name='attended_events', blank=True)
     upcoming_events = models.ManyToManyField('Event', related_name='upcoming_events', blank=True)
-    mobile_no = models.CharField(max_length=15, blank=True, null=True)
     logout_time = models.DateTimeField(blank=True, null=True)
     is_logged_out = models.BooleanField(default=False)
-    phone_number = models.IntegerField(default=0)
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
 
     def __str__(self):
         return self.user.username
