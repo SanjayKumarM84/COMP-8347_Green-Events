@@ -2,22 +2,49 @@
 {% block content %}
 <div class="profile-page">
     <h1>Profile</h1>
-    <form method="post" enctype="multipart/form-data">
+    <div id="profile-info">
+        <p><strong>Name:</strong> {{ names }} {{ request.user.last_name }}</p>
+        <p><strong>Bio:</strong> {{ request.user.profile.bio }}</p>
+        <p><strong>Pronouns:</strong> {{ request.user.profile.pronouns }}</p>
+        <p><strong>Email:</strong> {{ request.user.email }}</p>
+        <button id="edit-profile-btn" class="btn btn-secondary">Edit Profile</button>
+    </div>
+    <form id="profile-form" method="post" enctype="multipart/form-data" style="display: none;">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Update</button>
+        <fieldset>
+            <legend>Personal Info</legend>
+            {{ user_form.as_p }}
+        </fieldset>
+        <fieldset>
+            <legend>Profile Info</legend>
+            {{ profile_form.as_p }}
+        </fieldset>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <button type="button" id="cancel-edit-btn" class="btn btn-secondary">Cancel</button>
     </form>
     <h2>Past Events</h2>
     <ul>
-        {% for event in past_events %}
+        {% for event in request.user.profile.past_events.all %}
         <li>{{ event.name }}</li>
         {% endfor %}
     </ul>
     <h2>Upcoming Events</h2>
     <ul>
-        {% for event in upcoming_events %}
+        {% for event in request.user.profile.upcoming_events.all %}
         <li>{{ event.name }}</li>
         {% endfor %}
     </ul>
 </div>
+
+<script>
+    document.getElementById('edit-profile-btn').addEventListener('click', function() {
+        document.getElementById('profile-info').style.display = 'none';
+        document.getElementById('profile-form').style.display = 'block';
+    });
+
+    document.getElementById('cancel-edit-btn').addEventListener('click', function() {
+        document.getElementById('profile-form').style.display = 'none';
+        document.getElementById('profile-info').style.display = 'block';
+    });
+</script>
 {% endblock %}

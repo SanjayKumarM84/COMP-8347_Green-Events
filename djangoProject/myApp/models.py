@@ -7,6 +7,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
+    pronouns = models.CharField(max_length=100, blank=True, null=True)  # Add this line
     past_events = models.ManyToManyField('Event', related_name='attended_events', blank=True)
     upcoming_events = models.ManyToManyField('Event', related_name='upcoming_events', blank=True)
     mobile_no = models.CharField(max_length=15, blank=True, null=True)
@@ -45,4 +46,9 @@ class Registration(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.event.name}"
+
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+    instance.profile.save()
 

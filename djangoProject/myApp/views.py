@@ -3,7 +3,7 @@ import traceback
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Event, Profile, Registration
-from .forms import EventForm, UserRegistrationForm, ProfileForm
+from .forms import EventForm, UserRegistrationForm, ProfileForm, UserForm
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -13,6 +13,7 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
 from django.views.generic import ListView, DetailView
+
 
 class HomeView(ListView):
     model = Event
@@ -161,7 +162,8 @@ def profile(request):
         form = ProfileForm(instance=profile)
     past_events = profile.past_events.all()
     upcoming_events = profile.upcoming_events.all()
-    return render(request, 'profile.html', {'form': form, 'past_events': past_events, 'upcoming_events': upcoming_events})
+    return render(request, 'profile.html',
+                  {'form': form, 'past_events': past_events, 'upcoming_events': upcoming_events})
 
 
 @login_required
@@ -210,20 +212,42 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse(('home')))
-@login_required
-def view_profile(request):
-    return render(request, 'profile.html', {'user': request.user})
+
 
 @login_required
-def edit_profile(request):
+def view_profile(request):
     if request.method == 'POST':
+        user = request.user
         user_form = UserForm(request.POST, instance=request.user)
         profile_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            return redirect('view_profile')
+            return render(request, 'profile.html', {
+                'user_form': user_form,
+                'profile_form': profile_form,
+                'names' : user.get_full_name(),
+            })
     else:
         user_form = UserForm(instance=request.user)
         profile_form = ProfileForm(instance=request.user.profile)
-    return render(request, 'edit_profile.html', {'user_form': user_form, 'profile_form': profile_form})
+    return render(request, 'profile.html', {
+        'user_form': user_form,
+        'profile_form': profile_form  # Ensure user data is passed to the template
+    })
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=request.user.profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile was successfully updated!')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = ProfileForm(instance=request.user.profile)
+
+    return render(request, 'edit_profile.html', {'form': form})
