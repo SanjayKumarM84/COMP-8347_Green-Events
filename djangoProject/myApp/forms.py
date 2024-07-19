@@ -10,13 +10,29 @@ class EventForm(forms.ModelForm):
         fields = ['name', 'description', 'eventDate', 'location', 'agenda', 'speakers', 'image', 'total_num_of_seats']
 
 
+# class UserRegistrationForm(UserCreationForm):
+#     email = forms.EmailField()
+#
+#     class Meta:
+#         model = User
+#         fields = ['username', 'email', 'password1', 'password2']
+
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField()
+    phone_number = forms.CharField(max_length=15, required=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['username', 'email', 'password1', 'password2', 'phone_number']
 
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
+        if commit:
+            user.save()
+            profile = Profile.objects.create(user=user, phone_number=self.cleaned_data['phone_number'])
+            profile.save()
+        return user
 
 class ProfileForm(forms.ModelForm):
     class Meta:

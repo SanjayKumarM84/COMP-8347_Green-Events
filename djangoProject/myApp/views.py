@@ -1,4 +1,9 @@
 import traceback
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -11,6 +16,8 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import ListView, DetailView
+import random
+from twilio.rest import Client
 
 
 class HomeView(ListView):
@@ -92,6 +99,28 @@ def search_events(request):
                   {'events': events, 'query': query, 'date': date, 'location': location})
 
 
+# Function to generate a random 6-digit OTP
+def generate_otp():
+    return str(random.randint(100000, 999999))
+
+# Function to send the OTP via SMS
+def send_otp_sms(receiver_phone_number, otp_code):
+    # Twilio credentials
+    account_sid = os.getenv('ACCOUNT_SID')
+    auth_token = os.getenv('AUTH_TOKEN')
+    twilio_phone_number = os.getenv('twilio_phone_number')
+
+    client = Client(account_sid, auth_token)
+
+    message = client.messages.create(
+        body=f'Your OTP code is {otp_code}',
+        from_=twilio_phone_number,
+        to=receiver_phone_number
+    )
+
+    print(f"OTP sent to {receiver_phone_number}. Message SID: {message.sid}")
+
+
 @login_required
 def register_event(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
@@ -103,6 +132,11 @@ def register_event(request, event_id):
             Registration.objects.create(event=event, user=request.user)
             profile = Profile.objects.get(user=request.user)
             profile.upcoming_events.add(event)
+
+            otp_code = generate_otp()
+
+            receiver_phone_number = f'+1{profile.phone_number}'
+            send_otp_sms(receiver_phone_number, otp_code)
 
             # Return success response to trigger popup message
             return JsonResponse({'status': 'success', 'message': 'You have successfully registered for the event!'})
