@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-from os import environ
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +27,8 @@ SECRET_KEY = 'django-insecure-r*haz!i9^$tf1qb)^a!yxzr#=bn(3)qjgcvc0mxb5pb$4_hez9
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+env = environ.Env()
+environ.Env.read_env()
 
 # Application definition
 
@@ -130,12 +131,16 @@ LOGIN_URL = '/login/'
 
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / 'myApp' / 'static',
 ]
 
-env = environ.env()
-environ.env.read_env()
+# env = environ.Env()
+# environ.Env.read_env(env_file=str(Path(__file__).resolve().parent.parent / '.env'))
+#
+# ACCOUNT_SID = env('ACCOUNT_SID')
+# AUTH_TOKEN = env('AUTH_TOKEN')
+# TWILIO_PHONE_NUMBER = env('TWILIO_PHONE_NUMBER')
 
-ACCOUNT_SID = env('ACCOUNT_SID')
-AUTH_TOKEN = env('AUTH_TOKEN')
-TWILIO_PHONE_NUMBER = env('TWILIO_PHONE_NUMBER')
+TWILIO_ACCOUNT_SID = env("MY_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = env("TWILIO_AUTH_TOKEN")
+TWILIO_NUMBER = env("MY_TWILIO_NUMBER")

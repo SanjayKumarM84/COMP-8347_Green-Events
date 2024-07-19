@@ -19,6 +19,7 @@ from django.utils import timezone
 from django.views.generic import ListView, DetailView
 import random
 from twilio.rest import Client
+from django.conf import settings
 # Load environment variables from .env file
 load_dotenv()
 
@@ -112,7 +113,7 @@ def send_otp_sms(receiver_phone_number, otp_code):
     auth_token = os.getenv('AUTH_TOKEN')
     twilio_phone_number = os.getenv('twilio_phone_number')
 
-    client = Client(account_sid, auth_token)
+    client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 
     message = client.messages.create(
         body=f'Your OTP code is {otp_code}',
