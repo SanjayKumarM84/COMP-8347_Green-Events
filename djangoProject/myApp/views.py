@@ -11,6 +11,8 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import ListView, DetailView
+import random
+from twilio.rest import Client
 
 
 class HomeView(ListView):
@@ -92,6 +94,28 @@ def search_events(request):
                   {'events': events, 'query': query, 'date': date, 'location': location})
 
 
+# Function to generate a random 6-digit OTP
+def generate_otp():
+    return str(random.randint(100000, 999999))
+
+# Function to send the OTP via SMS
+def send_otp_sms(receiver_phone_number, otp_code):
+    # Twilio credentials
+    account_sid = 'AC71b6239cde98e5fae8252ff1286b302d'
+    auth_token = 'd07bcacb7bc0f1dc33a4bcc16b5857e2'
+    twilio_phone_number = '+15595173136'
+
+    client = Client(account_sid, auth_token)
+
+    message = client.messages.create(
+        body=f'Your OTP code is {otp_code}',
+        from_=twilio_phone_number,
+        to=receiver_phone_number
+    )
+
+    print(f"OTP sent to {receiver_phone_number}. Message SID: {message.sid}")
+
+
 @login_required
 def register_event(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
@@ -103,6 +127,11 @@ def register_event(request, event_id):
             Registration.objects.create(event=event, user=request.user)
             profile = Profile.objects.get(user=request.user)
             profile.upcoming_events.add(event)
+
+            otp_code = generate_otp()
+
+            receiver_phone_number = profile.phone_number
+            send_otp_sms(receiver_phone_number, otp_code)
 
             # Return success response to trigger popup message
             return JsonResponse({'status': 'success', 'message': 'You have successfully registered for the event!'})
