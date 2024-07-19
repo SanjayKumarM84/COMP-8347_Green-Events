@@ -214,27 +214,34 @@ def user_logout(request):
     return HttpResponseRedirect(reverse(('home')))
 
 
+# @login_required
+# def view_profile(request):
+#     if request.method == 'POST':
+#         user = request.user
+#         user_form = UserForm(request.POST, instance=request.user)
+#         profile_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
+#         if user_form.is_valid() and profile_form.is_valid():
+#             user_form.save()
+#             profile_form.save()
+#             return render(request, 'profile.html', {
+#                 'user_form': user_form,
+#                 'profile_form': profile_form,
+#                 'names' : user.get_full_name(),
+#             })
+#     else:
+#         user_form = UserForm(instance=request.user)
+#         profile_form = ProfileForm(instance=request.user.profile)
+#     return render(request, 'profile.html', {
+#         'user_form': user_form,
+#         'profile_form': profile_form  # Ensure user data is passed to the template
+#     })
+
 @login_required
 def view_profile(request):
-    if request.method == 'POST':
-        user = request.user
-        user_form = UserForm(request.POST, instance=request.user)
-        profile_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            return render(request, 'profile.html', {
-                'user_form': user_form,
-                'profile_form': profile_form,
-                'names' : user.get_full_name(),
-            })
-    else:
-        user_form = UserForm(instance=request.user)
-        profile_form = ProfileForm(instance=request.user.profile)
-    return render(request, 'profile.html', {
-        'user_form': user_form,
-        'profile_form': profile_form  # Ensure user data is passed to the template
-    })
+
+    user = request.user
+
+    return render(request, 'profile.html', {'user' : user})
 
 
 @login_required
@@ -250,4 +257,4 @@ def edit_profile(request):
     else:
         form = ProfileForm(instance=request.user.profile)
 
-    return render(request, 'edit_profile.html', {'form': form})
+    return render(request, 'ed2it_profile.html', {'form': form})
