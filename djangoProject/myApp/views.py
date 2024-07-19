@@ -10,9 +10,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.utils import timezone
-from django.core.mail import send_mail
-from django.conf import settings
 from django.views.generic import ListView, DetailView
+
 
 class HomeView(ListView):
     model = Event
@@ -93,37 +92,6 @@ def search_events(request):
                   {'events': events, 'query': query, 'date': date, 'location': location})
 
 
-def send_confirmation_email(user_email, event, user):
-    try:
-        subject = 'Event Registration Confirmation'
-        message = f'''
-        Dear {user.username},
-    
-        You have successfully registered for the event "{event.name}".
-    
-        Event Details:
-        Name: {event.name}
-        Description: {event.description}
-        Date: {event.eventDate.strftime('%Y-%m-%d %H:%M')}
-        Location: {event.location}
-        Agenda: {event.agenda}
-        Speakers: {event.speakers}
-    
-        Thank you for registering!
-    
-        Best regards,
-        Team Green Events
-        '''
-
-        from_email = settings.DEFAULT_FROM_EMAIL
-        recipient_list = [user_email]
-
-        send_mail(subject, message, from_email, recipient_list)
-    except Exception as err:
-        print(traceback.print_exc())
-        print(str(err))
-
-
 @login_required
 def register_event(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
@@ -135,9 +103,6 @@ def register_event(request, event_id):
             Registration.objects.create(event=event, user=request.user)
             profile = Profile.objects.get(user=request.user)
             profile.upcoming_events.add(event)
-
-            user_email = request.user.email
-            send_confirmation_email(user_email, event, request.user)
 
             # Return success response to trigger popup message
             return JsonResponse({'status': 'success', 'message': 'You have successfully registered for the event!'})
