@@ -1,4 +1,9 @@
 import traceback
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -101,9 +106,9 @@ def generate_otp():
 # Function to send the OTP via SMS
 def send_otp_sms(receiver_phone_number, otp_code):
     # Twilio credentials
-    account_sid = 'AC71b6239cde98e5fae8252ff1286b302d'
-    auth_token = 'd07bcacb7bc0f1dc33a4bcc16b5857e2'
-    twilio_phone_number = '+15595173136'
+    account_sid = os.getenv('ACCOUNT_SID')
+    auth_token = os.getenv('AUTH_TOKEN')
+    twilio_phone_number = os.getenv('twilio_phone_number')
 
     client = Client(account_sid, auth_token)
 
