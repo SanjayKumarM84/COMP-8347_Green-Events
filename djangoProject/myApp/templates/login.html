@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="login-page">
+    <div class="container login-form">
+        <h2>Login</h2>
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+        <p>Don't have an account? <a href="{% url 'register' %}">Sign up</a></p>
+        <!-- Uncomment the following line to add a password reset link -->
+{#        <!-- <p>Forgot password? <a href="{% url 'password_reset' %}">Reset password</a></p> -->#}
+    </div>
+</div>
+{% endblock %}

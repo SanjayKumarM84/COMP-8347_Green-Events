@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="event-details-page">
+    <h1>{{ event.name }}</h1>
+    <p>{{ event.description }}</p>
+    <p><strong>Date:</strong> {{ event.eventDate }}</p>
+    <p><strong>Location:</strong> {{ event.location }}</p>
+    <p><strong>Agenda:</strong> {{ event.agenda }}</p>
+    <p><strong>Speakers:</strong> {{ event.speakers }}</p>
+    <p><strong>Total Seats:</strong> {{ event.total_num_of_seats }}</p>
+    <p><strong>Registered Seats:</strong> {{ event.registered_seats }}</p>
+    <p><strong>Remaining Seats:</strong> {{ event.remaining_seats }}</p>
+
+    {% if user.is_authenticated %}
+    <button id="registerBtn" class="btn btn-success">Register</button>
+    {% else %}
+    <a href="{% url 'login' %}?next={% url 'event_detail' event.id %}" class="btn btn-primary">Login to Register</a>
+    {% endif %}
+
+    <div id="popupContainer"></div> <!-- Container for popup messages -->
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('registerBtn').addEventListener('click', function() {
+            var eventId = '{{ event.id }}';
+            fetch('{% url "register_event" event.id %}', {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(data => {
+                showPopup(data.status, data.message);
+            })
+            .catch(error => {
+                showPopup('error', 'Failed to register for the event. Error: ' + error);
+            });
+        });
+
+        function showPopup(status, message) {
+            // Create and append new popup
+            var popup = document.createElement('div');
+            popup.className = 'popup ' + status;
+            popup.textContent = message;
+            document.getElementById('popupContainer').appendChild(popup);
+
+            // Automatically remove after 3 seconds
+            setTimeout(function() {
+                popup.style.transition = 'opacity 0.5s';
+                popup.style.opacity = '0';
+                setTimeout(function() {
+                    popup.remove();
+                }, 500); // Adjust timing as needed
+            }, 3000); // Adjust timing as needed
+        }
+    });
+    </script>
+
+    <style>
+    .popup {
+        position: fixed;
+        top: 20px; /* Adjust top position as needed */
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 9999; /* Ensure it appears above other content */
+        max-width: 300px; /* Limit width of popup */
+        text-align: center;
+        transition: opacity 0.5s; /* Ensure smooth transition for fade-out */
+    }
+
+    .popup.success {
+        background-color: #4CAF50; /* Green background for success messages */
+        color: #fff;
+    }
+
+    .popup.error {
+        background-color: #f44336; /* Red background for error messages */
+        color: #fff;
+    }
+    </style>
+</div>
+{% endblock %}

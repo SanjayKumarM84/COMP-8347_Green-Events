@@ -1,0 +1,220 @@
+/* Master CSS for GreenEvents */
+@import url('https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css');
+
+/* Custom Colors */
+:root {
+    --primary-color: #4CAF50; /* Green */
+    --secondary-color: #8BC34A; /* Light Green */
+    --background-color: #F5F5F5; /* Light Gray */
+    --text-color: #333; /* Dark Gray */
+    --link-color: #4CAF50; /* Green */
+    --link-hover-color: #388E3C; /* Darker Green */
+}
+
+/* Global Styles */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Arial', sans-serif;
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--link-hover-color);
+    text-decoration: underline;
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: var(--primary-color);
+}
+
+.navbar-brand,
+.navbar-nav .nav-link {
+    color: #fff;
+}
+
+.navbar-brand:hover,
+.navbar-nav .nav-link:hover {
+    color: var(--secondary-color);
+}
+
+/* Footer Styles */
+.footer {
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 20px 0;
+}
+
+.footer a {
+    color: #fff;
+}
+
+.footer a:hover {
+    color: var(--secondary-color);
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--link-hover-color);
+    border-color: var(--link-hover-color);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--link-hover-color);
+    border-color: var(--link-hover-color);
+}
+
+/* Form Styles */
+.form-control {
+    border: 1px solid var(--secondary-color);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: none;
+}
+
+/* Card Styles */
+.card {
+    border: 1px solid var(--secondary-color);
+}
+
+.card-header {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+/* Custom Classes */
+.bg-primary-custom {
+    background-color: var(--primary-color) !important;
+    color: #fff;
+}
+
+.bg-secondary-custom {
+    background-color: var(--secondary-color) !important;
+    color: #fff;
+}
+
+.text-primary-custom {
+    color: var(--primary-color) !important;
+}
+
+.text-secondary-custom {
+    color: var(--secondary-color) !important;
+}
+
+/* Additional Styles */
+.container {
+    margin-top: 30px;
+}
+
+.event-card {
+    margin-bottom: 20px;
+}
+
+.profile-picture {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+}
+
+.profile-header {
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+.profile-header .profile-picture {
+    margin-top: -75px;
+    border: 5px solid #fff;
+}
+
+.event-details {
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid var(--secondary-color);
+    border-radius: 5px;
+}
+
+.event-details h2 {
+    color: var(--primary-color);
+}
+
+/* Page Specific Styles */
+.home-page .event-list {
+    margin-top: 20px;
+}
+
+.event-details-page .event-info {
+    margin-top: 20px;
+}
+
+.registration-page .registration-form,
+.login-page .login-form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.profile-page .profile-info {
+    margin-top: 20px;
+}
+
+.search-results-page .search-results {
+    margin-top: 20px;
+}
+
+.user-history-page .history-list {
+    margin-top: 20px;
+}
+
+.contact-page .contact-form,
+.about-page .about-content,
+.team-details-page .team-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.social-icon {
+    width: 30px;
+    height: 30px;
+    margin: 0 5px;
+    display: inline-block;
+}
+
+.social-icon img {
+    width: 10px; /* Ensuring the image fills the container */
+    height: 10px; /* Maintaining the aspect ratio */
+    display: inline-block; /* Removing any extra space below the image */
+}
+
+/* Custom Styles for the Search Form */
+#searchForm {
+    margin-top: 20px;
+}
+
+/* Ensure the search icon is visible and clickable */
+.nav-link i.fas {
+    font-size: 1.2em;
+}
+
+/* Additional styles for the search icon */
+#searchIcon {
+    cursor: pointer;
+}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="profile-page">
+    <h1>Profile</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+    <h2>Past Events</h2>
+    <ul>
+        {% for event in past_events %}
+        <li>{{ event.name }}</li>
+        {% endfor %}
+    </ul>
+    <h2>Upcoming Events</h2>
+    <ul>
+        {% for event in upcoming_events %}
+        <li>{{ event.name }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
