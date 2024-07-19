@@ -135,7 +135,7 @@ def register_event(request, event_id):
 
             otp_code = generate_otp()
 
-            receiver_phone_number = profile.phone_number
+            receiver_phone_number = f'+1{profile.phone_number}'
             send_otp_sms(receiver_phone_number, otp_code)
 
             # Return success response to trigger popup message
