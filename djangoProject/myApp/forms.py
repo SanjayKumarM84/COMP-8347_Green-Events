@@ -18,6 +18,11 @@ class UserRegistrationForm(UserCreationForm):
         fields = ['username', 'email', 'password1', 'password2']
 
 
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
