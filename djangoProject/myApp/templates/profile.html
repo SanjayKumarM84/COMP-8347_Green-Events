@@ -11,7 +11,7 @@
         <p><strong>Email:</strong> {{ user.email }}</p>
         <p><strong>Bio:</strong> {{ user.profile.bio }}</p>
         <p><strong>Pronouns:</strong> {{ user.profile.pronouns }}</p>
-        <p><strong>Mobile Number:</strong> {{ user.profile.mobile_no }}</p>
+        <p><strong>Mobile Number:</strong> {{ user.profile.phone_number }}</p>
         <p><strong>Profile Picture:</strong></p>
         {% if user.profile.profile_picture %}
             <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" width="150" height="150">
