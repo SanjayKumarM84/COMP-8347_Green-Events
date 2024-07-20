@@ -1,13 +1,25 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<div class="profile-page">
+<div class="container mt-4">
     <h1>Profile</h1>
     <div id="profile-info">
         {% if user %}
         <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>First Name:</strong> {{ user.first_name }}</p>
+        <p><strong>Last Name:</strong> {{ user.last_name }}</p>
         <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Bio:</strong> {{ user.profile.bio }}</p>
+        <p><strong>Pronouns:</strong> {{ user.profile.pronouns }}</p>
+        <p><strong>Mobile Number:</strong> {{ user.profile.mobile_no }}</p>
+        <p><strong>Profile Picture:</strong></p>
+        {% if user.profile.profile_picture %}
+            <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" width="150" height="150">
+        {% else %}
+            <p>No profile picture uploaded.</p>
         {% endif %}
-        <button id="edit-profile-btn" class="btn btn-secondary">Edit Profile</button>
+        {% endif %}
+        <button id="edit-profile-btn" class="btn btn-secondary mt-3">Edit Profile</button>
     </div>
     <form id="profile-form" method="post" enctype="multipart/form-data" style="display: none;">
         {% csrf_token %}
@@ -24,13 +36,13 @@
     </form>
     <h2>Past Events</h2>
     <ul>
-        {% for event in request.user.profile.past_events.all %}
+        {% for event in user.profile.past_events.all %}
         <li>{{ event.name }}</li>
         {% endfor %}
     </ul>
     <h2>Upcoming Events</h2>
     <ul>
-        {% for event in request.user.profile.upcoming_events.all %}
+        {% for event in user.profile.upcoming_events.all %}
         <li>{{ event.name }}</li>
         {% endfor %}
     </ul>
