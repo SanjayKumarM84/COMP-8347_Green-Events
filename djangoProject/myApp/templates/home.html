@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
+
 {% block content %}
 <div class="home-page">
     <div class="container">
+        <!-- Section for User Events -->
         <div class="row">
             {% if user_events %}
             <div class="col-12">
@@ -24,6 +26,7 @@
             {% endif %}
         </div>
 
+        <!-- Section for All Upcoming Events -->
         <div class="row">
             <div class="col-12">
                 <h2 class="text-primary-custom my-4">All Upcoming Events</h2>
@@ -42,6 +45,14 @@
                 </div>
             </div>
             {% endfor %}
+        </div>
+
+        <!-- Links for Feedback and User History -->
+        <div class="row">
+            <div class="col-12 text-center my-4">
+                <a href="{% url 'feedback' %}" class="btn btn-secondary">Give Feedback</a>
+                <a href="{% url 'user_history' %}" class="btn btn-info">View Your Event History</a> <!-- User History Link -->
+            </div>
         </div>
     </div>
 </div>

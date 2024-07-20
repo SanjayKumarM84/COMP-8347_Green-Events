@@ -22,4 +22,7 @@ urlpatterns = [
     path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_done.html'), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='password_reset_confirm.html'), name='password_reset_confirm'),
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'), name='password_reset_complete'),
+    path('feedback/', views.feedback_view, name='feedback'),
+    path('user-history/', views.user_history, name='user_history'),
+    path('event_feedback/<int:event_id>/', views.event_feedback_view, name='event_feedback'),
 ]

@@ -7,8 +7,8 @@ load_dotenv()
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import Event, Profile, Registration
-from .forms import EventForm, UserRegistrationForm, ProfileForm
+from .models import Feedback, Event, Profile, Registration
+from .forms import EventForm, UserRegistrationForm, ProfileForm, FeedbackForm, EventFeedbackForm
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -209,3 +209,55 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse(('home')))
+
+
+@login_required
+def feedback_view(request):
+    initial_data = {
+        'name': request.user.get_full_name(),
+        'email': request.user.email
+    }
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.user = request.user
+            feedback.save()
+            return redirect('home')
+    else:
+        form = FeedbackForm(initial=initial_data)
+
+    return render(request, 'webfeedback.html', {'form': form})
+
+@login_required
+def event_feedback_view(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    if request.method == 'POST':
+        form = EventFeedbackForm(request.POST)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.user = request.user
+            feedback.event = event
+            feedback.save()
+            messages.success(request, 'Your feedback has been submitted.')
+            return redirect('home')  # Redirect to the event detail page
+    else:
+        form = EventFeedbackForm()
+
+    return render(request, 'event_feedback_form.html', {'form': form, 'event': event})
+
+@login_required
+def user_history(request):
+    profile = get_object_or_404(Profile, user=request.user)
+
+    # Fetch attended events where user_attended is True
+    attended_events = Event.objects.filter(registration__user=request.user, registration__user_attended=True).distinct()
+
+    # Fetch upcoming events where user_attended is False and the event date is in the future
+    upcoming_events = Event.objects.filter(registration__user=request.user, registration__user_attended=False, eventDate__gte=timezone.now()).distinct()
+
+    return render(request, 'user_history.html', {
+        'attended_events': attended_events,
+        'upcoming_events': upcoming_events
+    })
+
