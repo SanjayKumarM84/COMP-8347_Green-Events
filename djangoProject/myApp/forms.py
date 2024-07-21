@@ -17,13 +17,14 @@ class EventForm(forms.ModelForm):
 #         model = User
 #         fields = ['username', 'email', 'password1', 'password2']
 
+
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField()
     phone_number = forms.CharField(max_length=15, required=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2', 'phone_number']
+        fields = ['username', 'email', 'password1', 'password2']
 
     def save(self, commit=True):
         user = super().save(commit=False)
