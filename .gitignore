@@ -1,7 +1,6 @@
 /greenEventsEnv/
-<<<<<<< HEAD
 .env
-=======
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -166,4 +165,3 @@ cython_debug/
 .idea/**
 
 .DS_Store
->>>>>>> dev-jahnavi

@@ -57,9 +57,8 @@ def register(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Account created for {username}!')
+            user = form.save()
+            messages.success(request, f'Account created for {user.username}!')
             return redirect('login')  # Redirect to login page after successful registration
     else:
         form = UserRegistrationForm()
@@ -182,6 +181,7 @@ def sustainability(request):
 
 def news(request):
     return render(request, 'news.html')
+
 def team_details(request):
     return render(request, 'team_details.html')
 
@@ -189,30 +189,30 @@ def socials(request):
     return render(request, 'socials.html')
 
 
-# Create your views here.
-def user_login(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        if user:
-            if user.is_active:
-                login(request, user)
-                response = HttpResponseRedirect(reverse('home'))
-                response.set_cookie('last_login', timezone.now().strftime('%Y-%m-%d %H:%M:%S'), max_age=3600)
-                return response
-            else:
-                return HttpResponse('Your account is disabled.')
-        else:
-            return HttpResponse('Invalid login details.')
-    else:
-        return render(request, 'login.html')
-
-
-@login_required
-def user_logout(request):
-    logout(request)
-    return HttpResponseRedirect(reverse(('home')))
+# # Create your views here.
+# def user_login(request):
+#     if request.method == 'POST':
+#         username = request.POST['username']
+#         password = request.POST['password']
+#         user = authenticate(username=username, password=password)
+#         if user:
+#             if user.is_active:
+#                 login(request, user)
+#                 response = HttpResponseRedirect(reverse('home'))
+#                 response.set_cookie('last_login', timezone.now().strftime('%Y-%m-%d %H:%M:%S'), max_age=3600)
+#                 return response
+#             else:
+#                 return HttpResponse('Your account is disabled.')
+#         else:
+#             return HttpResponse('Invalid login details.')
+#     else:
+#         return render(request, 'login.html')
+#
+#
+# @login_required
+# def user_logout(request):
+#     logout(request)
+#     return HttpResponseRedirect(reverse(('home')))
 
 
 @login_required
