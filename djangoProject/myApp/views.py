@@ -150,6 +150,15 @@ def register_event(request, event_id):
 
 def profile(request):
     profile = get_object_or_404(Profile, user=request.user)
+
+    # Initialize or update visit counter in session
+    today_date = timezone.now().strftime('%Y-%m-%d')
+    if 'last_visit_date' not in request.session or request.session['last_visit_date'] != today_date:
+        request.session['last_visit_date'] = today_date
+        request.session['visit_count'] = 1
+    else:
+        request.session['visit_count'] += 1
+
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
@@ -158,10 +167,18 @@ def profile(request):
             return redirect('profile')
     else:
         form = ProfileForm(instance=profile)
+
     past_events = profile.past_events.all()
     upcoming_events = profile.upcoming_events.all()
-    return render(request, 'profile.html', {'form': form, 'past_events': past_events, 'upcoming_events': upcoming_events})
+    lastLogin = request.COOKIES.get('last_login', '')
 
+    return render(request, 'profile.html', {
+        'form': form,
+        'past_events': past_events,
+        'upcoming_events': upcoming_events,
+        'lastLogin': lastLogin,
+        'visit_count': request.session['visit_count']
+    })
 
 @login_required
 def user_history(request):
@@ -196,14 +213,15 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect(reverse('home'))
+                response = HttpResponseRedirect(reverse('home'))
+                response.set_cookie('last_login', timezone.now().strftime('%Y-%m-%d %H:%M:%S'), max_age=3600)
+                return response
             else:
                 return HttpResponse('Your account is disabled.')
         else:
             return HttpResponse('Invalid login details.')
     else:
         return render(request, 'login.html')
-
 
 @login_required
 def user_logout(request):

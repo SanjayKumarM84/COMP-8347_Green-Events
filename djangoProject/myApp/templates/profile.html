@@ -19,5 +19,10 @@
         <li>{{ event.name }}</li>
         {% endfor %}
     </ul>
+    {% if lastLogin %}
+        <p>Your last login time was: {{ lastLogin }}</p>
+
+    {% endif %}
+    Visit count: {{ visit_count }}
 </div>
 {% endblock %}
