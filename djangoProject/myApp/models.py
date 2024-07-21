@@ -37,6 +37,13 @@ class Event(models.Model):
         self.remaining_seats = self.total_num_of_seats - self.registered_seats
         super().save(*args, **kwargs)
 
+class Feedback(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_feedbacks')
+    feedback_text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Feedback by {self.user.username} on {self.created_at.strftime('%Y-%m-%d %H:%M')}"
 
 class Registration(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
@@ -47,8 +54,12 @@ class Registration(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.event.name}"
 
-def create_or_update_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-    instance.profile.save()
 
+class EventFeedback(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='event_feedbacks')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    feedback_text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.event.name} feedback by {self.user.username} on {self.created_at.strftime('%Y-%m-%d %H:%M')}"

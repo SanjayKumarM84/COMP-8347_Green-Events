@@ -24,6 +24,9 @@ urlpatterns = [
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'), name='password_reset_complete'),
     path('profile/', views.view_profile, name='view_profile'),
     path('profile/edit/', views.edit_profile, name='edit_profile'),
+    path('feedback/', views.feedback_view, name='feedback'),
+    path('user-history/', views.user_history, name='user_history'),
+    path('event_feedback/<int:event_id>/', views.event_feedback_view, name='event_feedback'),
 ]
 
 if settings.DEBUG:
