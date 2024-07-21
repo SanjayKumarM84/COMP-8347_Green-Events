@@ -9,10 +9,10 @@ class Profile(models.Model):
     bio = models.TextField(blank=True, null=True)
     past_events = models.ManyToManyField('Event', related_name='attended_events', blank=True)
     upcoming_events = models.ManyToManyField('Event', related_name='upcoming_events', blank=True)
-    mobile_no = models.CharField(max_length=15, blank=True, null=True)
     logout_time = models.DateTimeField(blank=True, null=True)
     is_logged_out = models.BooleanField(default=False)
     phone_number = models.IntegerField(default=0)
+    pronouns = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
         return self.user.username
@@ -46,4 +46,9 @@ class Registration(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.event.name}"
+
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+    instance.profile.save()
 
