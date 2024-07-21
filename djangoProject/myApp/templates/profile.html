@@ -53,6 +53,11 @@
             <button type="button" id="cancel-edit-btn" class="btn btn-secondary mt-3">Cancel</button>
         </div>
     </form>
+    {% if lastLogin %}
+        <p>Your last login time was: {{ lastLogin }}</p>
+
+    {% endif %}
+    Visit count: {{ visit_count }}
 </div>
 
 <script>

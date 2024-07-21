@@ -182,7 +182,9 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect(reverse('home'))
+                response = HttpResponseRedirect(reverse('home'))
+                response.set_cookie('last_login', timezone.now().strftime('%Y-%m-%d %H:%M:%S'), max_age=3600)
+                return response
             else:
                 return HttpResponse('Your account is disabled.')
         else:
@@ -199,12 +201,22 @@ def user_logout(request):
 
 @login_required
 def view_profile(request):
+    # Initialize or update visit counter in session
+    today_date = timezone.now().strftime('%Y-%m-%d')
+    if 'last_visit_date' not in request.session or request.session['last_visit_date'] != today_date:
+        request.session['last_visit_date'] = today_date
+        request.session['visit_count'] = 1
+    else:
+        request.session['visit_count'] += 1
+    lastLogin = request.COOKIES.get('last_login', '')
     user_form = UserForm(instance=request.user)
     profile_form = ProfileForm(instance=request.user.profile)
     return render(request, 'profile.html', {
         'user': request.user,
         'user_form': user_form,
-        'profile_form': profile_form
+        'profile_form': profile_form,
+        'lastLogin': lastLogin,
+        'visit_count': request.session['visit_count']
     })
 
 
