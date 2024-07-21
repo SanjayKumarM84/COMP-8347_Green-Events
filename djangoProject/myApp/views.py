@@ -150,22 +150,6 @@ def register_event(request, event_id):
         return JsonResponse({'status': 'error', 'message': 'No seats available for this event.'})
 
 
-def profile(request):
-    profile = get_object_or_404(Profile, user=request.user)
-    if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES, instance=profile)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Profile updated successfully!')
-            return redirect('profile')
-    else:
-        form = ProfileForm(instance=profile)
-    past_events = profile.past_events.all()
-    upcoming_events = profile.upcoming_events.all()
-    return render(request, 'profile.html',
-                  {'form': form, 'past_events': past_events, 'upcoming_events': upcoming_events})
-
-
 @login_required
 def user_history(request):
     profile, created = Profile.objects.get_or_create(user=request.user)
@@ -214,50 +198,37 @@ def user_logout(request):
     return HttpResponseRedirect(reverse(('home')))
 
 
-# @login_required
-# def view_profile(request):
-#     if request.method == 'POST':
-#         user = request.user
-#         user_form = UserForm(request.POST, instance=request.user)
-#         profile_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
-#         if user_form.is_valid() and profile_form.is_valid():
-#             user_form.save()
-#             profile_form.save()
-#             return render(request, 'profile.html', {
-#                 'user_form': user_form,
-#                 'profile_form': profile_form,
-#                 'names' : user.get_full_name(),
-#             })
-#     else:
-#         user_form = UserForm(instance=request.user)
-#         profile_form = ProfileForm(instance=request.user.profile)
-#     return render(request, 'profile.html', {
-#         'user_form': user_form,
-#         'profile_form': profile_form  # Ensure user data is passed to the template
-#     })
-
 @login_required
 def view_profile(request):
-
-    user = request.user
-
-    return render(request, 'profile.html', {'user' : user})
+    user_form = UserForm(instance=request.user)
+    profile_form = ProfileForm(instance=request.user.profile)
+    return render(request, 'profile.html', {
+        'user': request.user,
+        'user_form': user_form,
+        'profile_form': profile_form
+    })
 
 
 @login_required
 def edit_profile(request):
     if request.method == 'POST':
+        print('Received POST request')
         user_form = UserForm(request.POST, instance=request.user)
         profile_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
 
         if user_form.is_valid() and profile_form.is_valid():
+            print('Forms are valid')
             user_form.save()
             profile_form.save()
             messages.success(request, 'Your profile was successfully updated!')
-            return redirect('profile')
+            return redirect('view_profile')
         else:
+            print('Forms are not valid')
+            print('User Form Errors:', user_form.errors)
+            print('Profile Form Errors:', profile_form.errors)
             messages.error(request, 'Please correct the error below.')
     else:
+        print('Received GET request')
         user_form = UserForm(instance=request.user)
         profile_form = ProfileForm(instance=request.user.profile)
 

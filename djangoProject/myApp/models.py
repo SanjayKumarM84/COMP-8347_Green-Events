@@ -12,6 +12,7 @@ class Profile(models.Model):
     logout_time = models.DateTimeField(blank=True, null=True)
     is_logged_out = models.BooleanField(default=False)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
+    pronouns = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
         return self.user.username
