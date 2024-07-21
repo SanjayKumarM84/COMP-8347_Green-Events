@@ -5,13 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <!-- Include Font Awesome from CDN -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <title>GreenEvents</title>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-primary-custom">
         <a class="navbar-brand" href="{% url 'home' %}">GreenEvents</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -59,14 +58,14 @@
         {% endblock %}
     </div>
 
-    <footer class="footer bg-light text-center py-4 mt-auto">
+    <footer class="footer bg-primary-custom text-center py-4 mt-auto">
         <div class="container">
             <div class="row">
                 <div class="col-md-3">
                     <h5>Follow Us</h5>
-                    <a href="#" class="social-icon"><img src="{% static 'images/facebook.png' %}" alt="Facebook"></a>
-                    <a href="#" class="social-icon"><img src="{% static 'images/instagram.png' %}" alt="Instagram"></a>
-                    <a href="#" class="social-icon"><img src="{% static 'images/pinterest.png' %}" alt="Pinterest"></a>
+                    <a href="/socials/" class="social-icon"><img src="{% static 'images/facebook.png' %}" alt="Facebook"></a>
+                    <a href="/socials/" class="social-icon"><img src="{% static 'images/instagram.png' %}" alt="Instagram"></a>
+                    <a href="/socials/" class="social-icon"><img src="{% static 'images/pinterest.png' %}" alt="Pinterest"></a>
                 </div>
                 <div class="col-md-3">
                     <h5>Environment</h5>
@@ -79,21 +78,21 @@
                 <div class="col-md-3">
                     <h5>Business & Policy</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Advertise</a></li>
+                        <li><a href="/privacy_policy/">Privacy Policy</a></li>
+                        <li><a href="/terms_of_service/">Terms of Service</a></li>
+                        <li><a href="/advertise/">Advertise</a></li>
                     </ul>
                 </div>
                 <div class="col-md-3">
                     <h5>Home & Garden</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#">Sustainability for All</a></li>
-                        <li><a href="#">News</a></li>
+                        <li><a href="/sustainability_for_all/">Sustainability for All</a></li>
+                        <li><a href="/news/">News</a></li>
                     </ul>
                 </div>
             </div>
             <hr>
-            <p>&copy; 2024 GreenEvents. All Rights Reserved.</p>
+            <p>© 2024 GreenEvents. All Rights Reserved.</p>
         </div>
     </footer>
 
