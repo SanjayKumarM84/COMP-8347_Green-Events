@@ -27,6 +27,12 @@ urlpatterns = [
     path('feedback/', views.feedback_view, name='feedback'),
     path('user-history/', views.user_history, name='user_history'),
     path('event_feedback/<int:event_id>/', views.event_feedback_view, name='event_feedback'),
+    path('privacy_policy/', views.privacy_policy, name='privacy_policy'),
+    path('terms_of_service/', views.terms_of_service, name='terms_of_service'),
+    path('advertise/', views.advertise, name='advertise'),
+    path('sustainability_for_all/', views.sustainability, name='sustainability_for_all'),
+    path('news/', views.news, name='news'),
+    path('socials/', views.socials, name='socials'),
 ]
 
 if settings.DEBUG:

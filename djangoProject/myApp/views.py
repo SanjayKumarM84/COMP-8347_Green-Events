@@ -168,9 +168,25 @@ def contact_us(request):
 def about_us(request):
     return render(request, 'about_us.html')
 
+def privacy_policy(request):
+    return render(request, 'privacy_policy.html')
 
+def terms_of_service(request):
+    return render(request, 'terms_of_service.html')
+
+def advertise(request):
+    return render(request, 'advertise.html')
+
+def sustainability(request):
+    return render(request,'sustainability_for_all.html')
+
+def news(request):
+    return render(request, 'news.html')
 def team_details(request):
     return render(request, 'team_details.html')
+
+def socials(request):
+    return render(request, 'socials.html')
 
 
 # Create your views here.
