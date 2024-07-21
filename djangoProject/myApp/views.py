@@ -3,8 +3,13 @@ import os
 from dotenv import load_dotenv
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+<<<<<<< HEAD
 from .models import Event, Profile, Registration
 from .forms import EventForm, UserRegistrationForm, ProfileForm, PasswordResetForm, SetPasswordForm
+=======
+from .models import Feedback, Event, Profile, Registration
+from .forms import EventForm, UserRegistrationForm, ProfileForm, UserForm, FeedbackForm, EventFeedbackForm
+>>>>>>> 298191027a9fc2f5cbcb78a8edf4e0998bfa1528
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -22,6 +27,7 @@ from twilio.rest import Client
 from django.conf import settings
 # Load environment variables from .env file
 load_dotenv()
+
 
 class HomeView(ListView):
     model = Event
@@ -224,21 +230,6 @@ def register_event(request, event_id):
         return JsonResponse({'status': 'error', 'message': 'No seats available for this event.'})
 
 
-def profile(request):
-    profile = get_object_or_404(Profile, user=request.user)
-    if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES, instance=profile)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Profile updated successfully!')
-            return redirect('profile')
-    else:
-        form = ProfileForm(instance=profile)
-    past_events = profile.past_events.all()
-    upcoming_events = profile.upcoming_events.all()
-    return render(request, 'profile.html', {'form': form, 'past_events': past_events, 'upcoming_events': upcoming_events})
-
-
 @login_required
 def user_history(request):
     profile, created = Profile.objects.get_or_create(user=request.user)
@@ -272,7 +263,9 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect(reverse('home'))
+                response = HttpResponseRedirect(reverse('home'))
+                response.set_cookie('last_login', timezone.now().strftime('%Y-%m-%d %H:%M:%S'), max_age=3600)
+                return response
             else:
                 return HttpResponse('Your account is disabled.')
         else:
@@ -285,3 +278,106 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse(('home')))
+
+
+@login_required
+def view_profile(request):
+    # Initialize or update visit counter in session
+    today_date = timezone.now().strftime('%Y-%m-%d')
+    if 'last_visit_date' not in request.session or request.session['last_visit_date'] != today_date:
+        request.session['last_visit_date'] = today_date
+        request.session['visit_count'] = 1
+    else:
+        request.session['visit_count'] += 1
+    lastLogin = request.COOKIES.get('last_login', '')
+    user_form = UserForm(instance=request.user)
+    profile_form = ProfileForm(instance=request.user.profile)
+    return render(request, 'profile.html', {
+        'user': request.user,
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'lastLogin': lastLogin,
+        'visit_count': request.session['visit_count']
+    })
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        print('Received POST request')
+        user_form = UserForm(request.POST, instance=request.user)
+        profile_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            print('Forms are valid')
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Your profile was successfully updated!')
+            return redirect('view_profile')
+        else:
+            print('Forms are not valid')
+            print('User Form Errors:', user_form.errors)
+            print('Profile Form Errors:', profile_form.errors)
+            messages.error(request, 'Please correct the error below.')
+    else:
+        print('Received GET request')
+        user_form = UserForm(instance=request.user)
+        profile_form = ProfileForm(instance=request.user.profile)
+
+    return render(request, 'edit_profile.html', {
+        'user_form': user_form,
+        'profile_form': profile_form
+    })
+
+
+def feedback_view(request):
+    initial_data = {
+        'name': request.user.get_full_name(),
+        'email': request.user.email
+    }
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.user = request.user
+            feedback.save()
+            return redirect('home')
+    else:
+        form = FeedbackForm(initial=initial_data)
+
+    return render(request, 'webfeedback.html', {'form': form})
+
+
+@login_required
+def event_feedback_view(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    if request.method == 'POST':
+        form = EventFeedbackForm(request.POST)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.user = request.user
+            feedback.event = event
+            feedback.save()
+            messages.success(request, 'Your feedback has been submitted.')
+            return redirect('home')  # Redirect to the event detail page
+    else:
+        form = EventFeedbackForm()
+
+    return render(request, 'event_feedback_form.html', {'form': form, 'event': event})
+
+
+@login_required
+def user_history(request):
+    profile = get_object_or_404(Profile, user=request.user)
+
+    # Fetch attended events where user_attended is True
+    attended_events = Event.objects.filter(registration__user=request.user, registration__user_attended=True).distinct()
+
+    # Fetch upcoming events where user_attended is False and the event date is in the future
+    upcoming_events = Event.objects.filter(registration__user=request.user, registration__user_attended=False, eventDate__gte=timezone.now()).distinct()
+
+    return render(request, 'user_history.html', {
+        'attended_events': attended_events,
+        'upcoming_events': upcoming_events
+    })
+

@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
+
 {% block content %}
 <div class="home-page">
     <div class="container">
+        <!-- Section for User Events -->
         <div class="row">
             {% if user_events %}
             <div class="col-12">
@@ -24,6 +26,7 @@
             {% endif %}
         </div>
 
+        <!-- Section for All Upcoming Events -->
         <div class="row">
             <div class="col-12">
                 <h2 class="text-primary-custom my-4">All Upcoming Events</h2>
@@ -43,6 +46,7 @@
             </div>
             {% endfor %}
         </div>
+
     </div>
 </div>
 {% endblock %}

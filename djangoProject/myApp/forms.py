@@ -1,6 +1,11 @@
 from django import forms
+<<<<<<< HEAD
 from .models import Event, Profile
 from django.contrib.auth.forms import UserCreationForm, PasswordResetForm as DjangoPasswordResetForm, SetPasswordForm as DjangoSetPasswordForm
+=======
+from .models import Event, Profile, Feedback, EventFeedback
+from django.contrib.auth.forms import UserCreationForm
+>>>>>>> 298191027a9fc2f5cbcb78a8edf4e0998bfa1528
 from django.contrib.auth.models import User
 
 
@@ -42,9 +47,17 @@ class UserRegistrationForm(UserCreationForm):
             profile.save()
         return user
 
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
+<<<<<<< HEAD
         fields = ['profile_picture', 'bio', 'phone_number']
 
 class PasswordResetForm(forms.Form):
@@ -79,3 +92,34 @@ class SetPasswordForm(forms.Form):
         if commit:
             self.user.save()
         return self.user
+=======
+        fields = ['bio', 'pronouns', 'phone_number', 'profile_picture']
+
+
+class FeedbackForm(forms.ModelForm):
+    name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}), required=False)
+
+    class Meta:
+        model = Feedback
+        fields = ['name', 'email', 'feedback_text']
+        widgets = {
+            'feedback_text': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
+        }
+        labels = {
+            'feedback_text': 'Feedback',
+        }
+
+
+class EventFeedbackForm(forms.ModelForm):
+    class Meta:
+        model = EventFeedback
+        fields = ['feedback_text']
+        widgets = {
+            'feedback_text': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
+        }
+        labels = {
+            'feedback_text': 'Feedback',
+        }
+
+>>>>>>> 298191027a9fc2f5cbcb78a8edf4e0998bfa1528
