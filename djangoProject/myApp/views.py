@@ -15,6 +15,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.utils import timezone
+from datetime import datetime
+from django.contrib.auth import views as auth_views
 from django.views.generic import ListView, DetailView
 import random
 from twilio.rest import Client
@@ -214,6 +216,17 @@ def socials(request):
 #     logout(request)
 #     return HttpResponseRedirect(reverse(('home')))
 
+class CustomLoginView(auth_views.LoginView):
+    template_name = 'login.html'
+
+    def form_valid(self, form):
+        # Call the parent form_valid method to log in the user
+        response = super().form_valid(form)
+
+        # Set the cookie with the last login time
+        response.set_cookie('last_login', datetime.now().strftime('%Y-%m-%d %H:%M:%S'), max_age=3600)
+
+        return response
 
 @login_required
 def view_profile(request):
@@ -224,14 +237,14 @@ def view_profile(request):
         request.session['visit_count'] = 1
     else:
         request.session['visit_count'] += 1
-    lastLogin = request.COOKIES.get('last_login', '')
+    last_login = request.COOKIES.get('last_login', '')
     user_form = UserForm(instance=request.user)
     profile_form = ProfileForm(instance=request.user.profile)
     return render(request, 'profile.html', {
         'user': request.user,
         'user_form': user_form,
         'profile_form': profile_form,
-        'lastLogin': lastLogin,
+        'lastLogin': last_login,
         'visit_count': request.session['visit_count']
     })
 
