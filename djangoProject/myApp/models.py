@@ -56,10 +56,11 @@ class Registration(models.Model):
 
 
 class EventFeedback(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='event_feedbacks')
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     feedback_text = models.TextField()
+    star_rating = models.IntegerField(default=1, choices=[(i, str(i)) for i in range(1, 6)])  # 1-5 star rating
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.event.name} feedback by {self.user.username} on {self.created_at.strftime('%Y-%m-%d %H:%M')}"
+        return f'{self.event.name} feedback by {self.user.username} on {self.created_at.strftime("%Y-%m-%d %H:%M")}'
