@@ -66,11 +66,12 @@ class FeedbackForm(forms.ModelForm):
 class EventFeedbackForm(forms.ModelForm):
     class Meta:
         model = EventFeedback
-        fields = ['feedback_text']
+        fields = ['feedback_text', 'star_rating']
         widgets = {
             'feedback_text': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
+            'star_rating': forms.RadioSelect()
         }
         labels = {
             'feedback_text': 'Feedback',
+            'star_rating': 'Rating'
         }
-
