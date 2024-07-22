@@ -3,19 +3,22 @@
 
 /* Custom Colors */
 :root {
-    --primary-color: #4CAF50; /* Green */
-    --secondary-color: #8BC34A; /* Light Green */
-    --background-color: #F5F5F5; /* Light Gray */
-    --text-color: #333; /* Dark Gray */
-    --link-color: #4CAF50; /* Green */
-    --link-hover-color: #388E3C; /* Darker Green */
+    --primary-color: #2E8B57; /* Sea Green */
+    --secondary-color: #3CB371; /* Medium Sea Green */
+    --background-color: #E8F5E9; /* Light Green */
+    --text-color: #2F4F4F; /* Dark Slate Gray */
+    --link-color: #2E8B57; /* Sea Green */
+    --link-hover-color: #228B22; /* Forest Green */
+    --glass-bg: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
+    --glass-border: rgba(46, 139, 87, 0.3); /* Semi-transparent Sea Green */
+    --glass-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
 }
 
 /* Global Styles */
 body {
     background-color: var(--background-color);
     color: var(--text-color);
-    font-family: 'Arial', sans-serif;
+    font-family: 'system-ui', -apple-system;
     display: none;
 }
 
@@ -27,6 +30,16 @@ a {
 a:hover {
     color: var(--link-hover-color);
     text-decoration: underline;
+}
+
+/* Glass Effect Styles */
+.glass {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--glass-shadow);
+    border-radius: 10px;
+    padding: 15px;
 }
 
 /* Navbar Styles */
@@ -137,6 +150,13 @@ a:hover {
     color: #fff;
 }
 
+/* Card Hover Effect */
+.card:hover {
+    transform: translateY(-10px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
 /* Custom Classes */
 .bg-primary-custom {
     background-color: var(--primary-color) !important;
@@ -186,7 +206,7 @@ a:hover {
 
 .event-details {
     padding: 20px;
-    background-color: #fff;
+    background-color: var(--glass-bg);
     border: 1px solid var(--secondary-color);
     border-radius: 5px;
 }
