@@ -10,7 +10,7 @@
     <title>GreenEvents</title>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-primary-custom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-light bg-primary-custom fixed-top glass">
         <a class="navbar-brand" href="{% url 'home' %}">GreenEvents</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -61,7 +61,7 @@
     </nav>
 
     <div class="container mt-5 pt-5">
-        <div id="searchForm" class="collapse">
+        <div id="searchForm" class="collapse glass">
             <form class="form-inline my-2 my-lg-0" action="{% url 'search_events' %}" method="get">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q">
                 <input class="form-control mr-sm-2" type="date" placeholder="Date" name="date">
@@ -75,7 +75,7 @@
         {% endblock %}
     </div>
 
-    <footer class="footer bg-primary-custom text-center py-4 mt-auto">
+    <footer class="footer bg-primary-custom text-center py-4 mt-auto glass">
         <div class="container">
             <div class="row">
                 <div class="col-md-3">
@@ -154,9 +154,9 @@
             // Smooth scroll for page load
             $('html, body').hide().fadeIn(1000);
 
-            // Footer sections hover animation
-            $('.footer-heading').mouseenter(function() {
-                $(this).next('.footer-links').stop(true, true).slideDown(600);
+            // Footer section hover animation
+            $('.footer').mouseenter(function() {
+                $('.footer-links').stop(true, true).slideDown(600);
             });
 
             $('.footer').mouseleave(function() {
