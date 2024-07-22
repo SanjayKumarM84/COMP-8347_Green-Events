@@ -15,7 +15,7 @@
 body {
     background-color: var(--background-color);
     color: var(--text-color);
-    font-family: 'Arial', sans-serif;
+    font-family: 'system-ui', -apple-system;
     display: none;
 }
 
