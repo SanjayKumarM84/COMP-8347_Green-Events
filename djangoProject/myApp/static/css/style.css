@@ -150,6 +150,13 @@ a:hover {
     color: #fff;
 }
 
+/* Card Hover Effect */
+.card:hover {
+    transform: translateY(-10px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
 /* Custom Classes */
 .bg-primary-custom {
     background-color: var(--primary-color) !important;
