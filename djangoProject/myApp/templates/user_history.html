@@ -18,9 +18,9 @@
                 </div>
             </div>
         </div>
-{% empty %}
-<p>No attended events found.</p>
-{% endfor %}
+        {% empty %}
+        <p>No attended events found.</p>
+        {% endfor %}
     </div>
 
     <h2>Upcoming Events</h2>
@@ -39,7 +39,7 @@
             </div>
         </div>
         {% empty %}
-        <p>No upcoming events found.</p>
+        <p class="no-events">No upcoming events found.</p>
         {% endfor %}
     </div>
 </div>

@@ -277,4 +277,7 @@ a:hover {
     cursor: pointer;
 }
 /* Existing CSS above... */
-
+.no-events {
+    padding-left: 20px; /* Adjust the value to the desired tab space */
+    margin-left: 20px;  /* Optional: Adjust if you want additional margin */
+}
