@@ -21,6 +21,9 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 {% if user.is_authenticated %}
+                    <li class="nav-item">
+                    <a class="nav-link" href="{% url 'create_event' %}">Create Event</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'feedback' %}">Give Feedback</a>
                 </li>
@@ -73,7 +76,7 @@
         <div id="searchForm" class="collapse glass">
             <form class="form-inline my-2 my-lg-0" action="{% url 'search_events' %}" method="get">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q">
-                <input class="form-control mr-sm-2" type="date" placeholder="Date" name="date">
+                <input class="form-control mr-sm-2" type="date" placeholder="Date" name="eventDate">
                 <input class="form-control mr-sm-2" type="text" placeholder="Location" name="location">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
