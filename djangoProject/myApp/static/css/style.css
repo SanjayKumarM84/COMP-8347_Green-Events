@@ -17,9 +17,16 @@
 /* Global Styles */
 body {
     background-color: var(--background-color);
+    background-image: url("/media/profile_pictures/cool-background.png");
+    background-size: cover; /* Ensures the image covers the entire background */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed; /* Keeps the background fixed while scrolling */
     color: var(--text-color);
     font-family: 'system-ui', -apple-system;
-    display: none;
+    min-height: 100vh; /* Ensures the body covers the full viewport height */
+    margin: 0; /* Removes any default margin */
+    display: block; /* Make sure the body is displayed */
 }
 
 a {
