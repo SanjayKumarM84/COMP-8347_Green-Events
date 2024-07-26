@@ -1,34 +1,26 @@
-import traceback
-import os
 from dotenv import load_dotenv
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-<<<<<<< HEAD
-from .models import Event, Profile, Registration
-from .forms import EventForm, UserRegistrationForm, ProfileForm, PasswordResetForm, SetPasswordForm
-=======
-from .models import Feedback, Event, Profile, Registration
-from .forms import EventForm, UserRegistrationForm, ProfileForm, UserForm, FeedbackForm, EventFeedbackForm
->>>>>>> 298191027a9fc2f5cbcb78a8edf4e0998bfa1528
-from django.db.models import Q
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.models import User
-from django.contrib.auth.tokens import default_token_generator
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.utils.encoding import force_bytes, force_str
-from django.core.exceptions import ObjectDoesNotExist
-from django.urls import reverse
-from django.utils import timezone
-from django.views.generic import ListView, DetailView
-import random
-from twilio.rest import Client
-from django.conf import settings
+
 # Load environment variables from .env file
 load_dotenv()
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import Feedback, Event, Profile, Registration
+from .forms import EventForm, UserRegistrationForm, ProfileForm, UserForm, FeedbackForm, EventFeedbackForm
+from django.db.models import Q
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.urls import reverse
+from django.utils import timezone
+from datetime import datetime
+from django.contrib.auth import views as auth_views
+from django.views.generic import ListView, DetailView
+import datetime
 
+
+#Worked by Sanjay
+#Home Page is implemented using class based views
 class HomeView(ListView):
     model = Event
     template_name = 'home.html'
@@ -48,6 +40,31 @@ class HomeView(ListView):
         return context
 
 
+#Worked By Sanjay
+#This view function is used to search for events based on event title, location and date
+def search_events(request):
+    query = request.GET.get('q') # If user enters event title or a part of a event title
+    date = request.GET.get('date') # If user enters date
+    location = request.GET.get('location') # If user enters location
+
+    filters = Q()
+    if query:
+        filters &= Q(name__icontains=query) | Q(description__icontains=query) | Q(location__icontains=query)
+    if date:
+        filters &= Q(date=date)
+    if location:
+        filters &= Q(location__icontains=location)
+
+    events = Event.objects.filter(filters) # Fetch data from database based on above filter
+
+    # Returning the results
+    return render(request, 'search_results.html',
+                  {'events': events, 'query': query, 'date': date, 'location': location})
+
+
+#--------------------------------------------------------------------
+#Worked by Bhuvanesh
+#Event Detail Page has been implemented using class based views
 class EventDetailView(DetailView):
     model = Event
     template_name = 'event_detail.html'
@@ -61,153 +78,30 @@ class EventDetailView(DetailView):
         return obj
 
 
+#Worked by Bhuvanesh
+#User Regsitration/Sign Up Function
 def register(request):
     if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
+        form = UserRegistrationForm(request.POST) #Input values (username, email, password) are been captured using django Forms
         if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Account created for {username}!')
+            # User data will be saved if the form is valid
+            user = form.save() #Saving user data into the database
             return redirect('login')  # Redirect to login page after successful registration
     else:
+        # For GET method
         form = UserRegistrationForm()
     return render(request, 'register.html', {'form': form})
 
 
-@login_required
-def create_event(request):
-    if request.method == 'POST':
-        form = EventForm(request.POST, request.FILES)
-        if form.is_valid():
-            event = form.save(commit=False)
-            event.created_by = request.user
-            event.save()
-            messages.success(request, 'Event created successfully!')
-            return redirect('home')
-    else:
-        form = EventForm()
-    return render(request, 'create_event.html', {'form': form})
-
-
-def search_events(request):
-    query = request.GET.get('q')
-    date = request.GET.get('date')
-    location = request.GET.get('location')
-
-    filters = Q()
-    if query:
-        filters &= Q(name__icontains=query) | Q(description__icontains=query) | Q(location__icontains=query)
-    if date:
-        filters &= Q(date=date)
-    if location:
-        filters &= Q(location__icontains=location)
-
-    events = Event.objects.filter(filters)
-
-    return render(request, 'search_results.html',
-                  {'events': events, 'query': query, 'date': date, 'location': location})
-
-
-# Function to generate a random 6-digit OTP
-def generate_otp():
-    return str(random.randint(100000, 999999))
-
-# Function to send the OTP via SMS
-def send_otp_sms(receiver_phone_number, otp_code):
-    # Twilio credentials
-    account_sid = os.getenv('ACCOUNT_SID')
-    auth_token = os.getenv('AUTH_TOKEN')
-    twilio_phone_number = os.getenv('twilio_phone_number')
-
-    client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
-
-    message = client.messages.create(
-        body=f'Your OTP code is {otp_code}',
-        from_=twilio_phone_number,
-        to=receiver_phone_number
-    )
-
-    print(f"OTP sent to {receiver_phone_number}. Message SID: {message.sid}")
-
-
-def send_otp_sms(receiver_phone_number, otp_code):
-    account_sid = os.getenv('ACCOUNT_SID')
-    auth_token = os.getenv('AUTH_TOKEN')
-    twilio_phone_number = os.getenv('TWILIO_PHONE_NUMBER')
-
-    client = Client(account_sid, auth_token)
-
-    message = client.messages.create(
-        body=f'Your OTP code is {otp_code}',
-        from_=twilio_phone_number,
-        to=receiver_phone_number
-    )
-
-    print(f"OTP sent to {receiver_phone_number}. Message SID: {message.sid}")
-
-
-def request_otp(request):
-    if request.method == 'POST':
-        form = PasswordResetForm(request.POST)
-        if form.is_valid():
-            phone_number = form.cleaned_data['phone_number']
-            if not phone_number.startswith('+1'):
-                phone_number = '+1' + phone_number
-            try:
-                user = User.objects.get(profile__phone_number=phone_number)
-                otp = generate_otp()
-                user.profile.otp = otp
-                user.profile.save()
-                send_otp_sms(phone_number, otp)
-                return redirect('verify_otp', uidb64=urlsafe_base64_encode(force_bytes(user.pk)))
-            except User.DoesNotExist:
-                form.add_error('phone_number', 'Phone number not registered.')
-    else:
-        form = PasswordResetForm()
-    return render(request, 'password_reset.html', {'form': form})
-
-
-def verify_otp(request, uidb64):
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
-
-    if request.method == 'POST':
-        otp = request.POST['otp']
-        if user is not None and user.profile.otp == otp:
-            return redirect('reset_password', uidb64=uidb64)
-        else:
-            return HttpResponse('Invalid OTP')
-    return render(request, 'password_reset_confirm.html', {'uidb64': uidb64})
-
-
-def reset_password(request, uidb64):
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
-
-    if request.method == 'POST':
-        form = SetPasswordForm(user, request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('password_reset_complete')
-    else:
-        form = SetPasswordForm(user)
-    return render(request, 'password_reset_confirm.html', {'form': form})
-
-
-def password_reset_complete(request):
-    return render(request, 'password_reset_complete.html')
-
+# Worked by Bhuvanesh
+# To register a event
 @login_required
 def register_event(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
+    # Checking whether there are any remanining seats in that particular event
     if event.remaining_seats > 0:
         is_user_already_registered = Registration.objects.filter(event=event, user=request.user).exists()
+        # If the user has not registered
         if not is_user_already_registered:
             event.registered_seats += 1
             event.save()
@@ -215,71 +109,36 @@ def register_event(request, event_id):
             profile = Profile.objects.get(user=request.user)
             profile.upcoming_events.add(event)
 
-            otp_code = generate_otp()
-
-            receiver_phone_number = f'+1{profile.phone_number}'
-            send_otp_sms(receiver_phone_number, otp_code)
-
-            # Return success response to trigger popup message
+            # Returning success response to trigger popup message
             return JsonResponse({'status': 'success', 'message': 'You have successfully registered for the event!'})
         else:
-            # Return error response to trigger popup message
+            # If the user has already registered
+            # Returning error response to trigger popup message
             return JsonResponse({'status': 'error', 'message': 'Already Registered.'})
     else:
-        # Return error response to trigger popup message
+        # If there are no remaining seats left
+        # Returning error response to trigger popup message
         return JsonResponse({'status': 'error', 'message': 'No seats available for this event.'})
 
 
-@login_required
-def user_history(request):
-    profile, created = Profile.objects.get_or_create(user=request.user)
-    visited_events = profile.past_events.all()
+# Worked By Bhuvanesh
+# Login View Function
+class CustomLoginView(auth_views.LoginView):
+    template_name = 'login.html'
 
-    return render(request, 'user_history.html', {'visited_events': visited_events})
+    def form_valid(self, form):
+        # Call the parent form_valid method to log in the user
+        response = super().form_valid(form)
 
+        # Set the cookie with the last login time
+        response.set_cookie('last_login', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), max_age=3600)
 
-def contact_us(request):
-    if request.method == 'POST':
-        # Handle contact form submission
-        messages.success(request, 'Your message has been sent!')
-        return redirect('contact_us')
-    return render(request, 'contact_us.html')
-
-
-def about_us(request):
-    return render(request, 'about_us.html')
+        return response
 
 
-def team_details(request):
-    return render(request, 'team_details.html')
-
-
-# Create your views here.
-def user_login(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        if user:
-            if user.is_active:
-                login(request, user)
-                response = HttpResponseRedirect(reverse('home'))
-                response.set_cookie('last_login', timezone.now().strftime('%Y-%m-%d %H:%M:%S'), max_age=3600)
-                return response
-            else:
-                return HttpResponse('Your account is disabled.')
-        else:
-            return HttpResponse('Invalid login details.')
-    else:
-        return render(request, 'login.html')
-
-
-@login_required
-def user_logout(request):
-    logout(request)
-    return HttpResponseRedirect(reverse(('home')))
-
-
+#--------------------------------------------------------------------
+# Worked By Jahnavi
+# View function used to show user profile
 @login_required
 def view_profile(request):
     # Initialize or update visit counter in session
@@ -289,25 +148,28 @@ def view_profile(request):
         request.session['visit_count'] = 1
     else:
         request.session['visit_count'] += 1
-    lastLogin = request.COOKIES.get('last_login', '')
+    last_login = request.COOKIES.get('last_login', '')
     user_form = UserForm(instance=request.user)
     profile_form = ProfileForm(instance=request.user.profile)
     return render(request, 'profile.html', {
         'user': request.user,
         'user_form': user_form,
         'profile_form': profile_form,
-        'lastLogin': lastLogin,
+        'lastLogin': last_login,
         'visit_count': request.session['visit_count']
     })
 
-
+# Worked by Jahnavi
+# View Function used to edit user profile
 @login_required
 def edit_profile(request):
     if request.method == 'POST':
         print('Received POST request')
+        # User data will be captured from Forms
         user_form = UserForm(request.POST, instance=request.user)
         profile_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
 
+        # If the forms are valid
         if user_form.is_valid() and profile_form.is_valid():
             print('Forms are valid')
             user_form.save()
@@ -315,6 +177,7 @@ def edit_profile(request):
             messages.success(request, 'Your profile was successfully updated!')
             return redirect('view_profile')
         else:
+            # If the forms are invalid
             print('Forms are not valid')
             print('User Form Errors:', user_form.errors)
             print('Profile Form Errors:', profile_form.errors)
@@ -330,42 +193,55 @@ def edit_profile(request):
     })
 
 
+# Worked By Jahnavi
+# View function used for website feedback
 def feedback_view(request):
+    # Capturing user full name and email
     initial_data = {
         'name': request.user.get_full_name(),
         'email': request.user.email
     }
     if request.method == 'POST':
+        # Forms is been used to take user input data
         form = FeedbackForm(request.POST)
         if form.is_valid():
+            # If the form is valid, save the user input data in the database and redirect user to the home page
             feedback = form.save(commit=False)
             feedback.user = request.user
             feedback.save()
             return redirect('home')
     else:
+        # For GET method
         form = FeedbackForm(initial=initial_data)
 
     return render(request, 'webfeedback.html', {'form': form})
 
 
+#--------------------------------------------------------------------
+# Worked By Aamani
+# View function used for event feedback
 @login_required
 def event_feedback_view(request, event_id):
-    event = get_object_or_404(Event, id=event_id)
+    event = get_object_or_404(Event, id=event_id) # Querying event data based on id
     if request.method == 'POST':
+        # User input data will be captured using django forms
         form = EventFeedbackForm(request.POST)
         if form.is_valid():
+            # If the form is valid, then user input data will be saved in the database and user will be redirected to home page
             feedback = form.save(commit=False)
             feedback.user = request.user
             feedback.event = event
             feedback.save()
-            messages.success(request, 'Your feedback has been submitted.')
             return redirect('home')  # Redirect to the event detail page
     else:
+        # For GET method
         form = EventFeedbackForm()
 
     return render(request, 'event_feedback_form.html', {'form': form, 'event': event})
 
 
+# Worked by Aamani
+# View function to see the past and upcoming events of the user
 @login_required
 def user_history(request):
     profile = get_object_or_404(Profile, user=request.user)
@@ -380,4 +256,57 @@ def user_history(request):
         'attended_events': attended_events,
         'upcoming_events': upcoming_events
     })
+
+#--------------------------------------------------------------------
+# Static Pages
+
+def contact_us(request):
+    if request.method == 'POST':
+        # Handle contact form submission
+        messages.success(request, 'Your message has been sent!')
+        return redirect('contact_us')
+    return render(request, 'contact_us.html')
+
+
+def about_us(request):
+    return render(request, 'about_us.html')
+
+def privacy_policy(request):
+    return render(request, 'privacy_policy.html')
+
+def terms_of_service(request):
+    return render(request, 'terms_of_service.html')
+
+def advertise(request):
+    return render(request, 'advertise.html')
+
+def sustainability(request):
+    return render(request,'sustainability_for_all.html')
+
+def news(request):
+    return render(request, 'news.html')
+
+def team_details(request):
+    return render(request, 'team_details.html')
+
+def socials(request):
+    return render(request, 'socials.html')
+
+
+#---------------------------------------------------------------------------------------------------------
+#Worked by Sanjay
+# To create a event
+@login_required
+def create_event(request):
+    if request.method == 'POST':
+        form = EventForm(request.POST, request.FILES)
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.created_by = request.user
+            event.save()
+            messages.success(request, 'Event created successfully!')
+            return redirect('home')
+    else:
+        form = EventForm()
+    return render(request, 'create_event.html', {'form': form})
 

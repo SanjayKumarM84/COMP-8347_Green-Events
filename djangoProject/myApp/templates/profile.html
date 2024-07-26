@@ -13,6 +13,8 @@
     <h1 class="mb-4">Profile</h1>
     <div id="profile-info" class="card p-4">
         {% if user %}
+            <h2 style="text-align: center">Welcome {{ user.first_name }}</h2>
+            <br>
         <div class="row">
             <div class="col-md-4 text-center">
                 {% if user.profile.profile_picture %}

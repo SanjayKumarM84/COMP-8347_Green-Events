@@ -3,19 +3,34 @@
 
 /* Custom Colors */
 :root {
-    --primary-color: #4CAF50; /* Green */
-    --secondary-color: #8BC34A; /* Light Green */
-    --background-color: #F5F5F5; /* Light Gray */
-    --text-color: #333; /* Dark Gray */
-    --link-color: #4CAF50; /* Green */
-    --link-hover-color: #388E3C; /* Darker Green */
+    --primary-color: rgb(46, 139, 87); /* Sea Green */
+    --secondary-color: #3CB371; /* Medium Sea Green */
+    --background-color: #E8F5E9; /* Light Green */
+    --text-color: #2F4F4F; /* Dark Slate Gray */
+    --link-color: #2E8B57; /* Sea Green */
+    --link-hover-color: #228B22; /* Forest Green */
+    --glass-bg: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
+    --glass-border: rgba(46, 139, 87, 0.3); /* Semi-transparent Sea Green */
+    --glass-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
 }
-
+html {
+    height: 100%; /* Ensures the html element covers the full height */
+}
 /* Global Styles */
 body {
     background-color: var(--background-color);
+    background-image: url("/media/profile_pictures/cool-background.png");
+    background-size: cover; /* Ensures the image covers the entire background */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed; /* Keeps the background fixed while scrolling */
     color: var(--text-color);
-    font-family: 'Arial', sans-serif;
+    font-family: 'system-ui', -apple-system;
+    min-height: 100vh; /* Ensures the body covers the full viewport height */
+    margin: 0; /* Removes any default margin */
+
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
 }
 
 a {
@@ -28,14 +43,41 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Navbar Styles */
+/* Glass Effect Styles */
+.glass {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--glass-shadow);
+    border-radius: 10px;
+    padding: 15px;
+}
+
+/* Navbar Styles with Glass Effect */
 .navbar {
-    background-color: var(--primary-color);
+    background: var(--glass-bg); /* Semi-transparent background */
+    border: 1px solid var(--glass-border); /* Semi-transparent border */
+    backdrop-filter: blur(10px); /* Blur effect */
+    box-shadow: var(--glass-shadow); /* Soft shadow */
+    border-radius: 10px; /* Rounded corners */
+    padding: 15px; /* Padding */
+    transition: background-color 0.5s ease; /* Smooth transition */
+}
+
+
+.navbar.bg-dark {
+    background-color: rgba(51, 51, 51, 0.1) !important;
 }
 
 .navbar-brand,
-.navbar-nav .nav-link {
-    color: #fff;
+ svg{
+    fill: #fff;
+}
+
+
+
+.navbar-nav .nav-item .custom-link {
+    color: #fff; /* White color */
 }
 
 .navbar-brand:hover,
@@ -43,11 +85,20 @@ a:hover {
     color: var(--secondary-color);
 }
 
+/* Hover effect for navbar items */
+.navbar-nav .nav-item.nav-hover {
+    background-color: var(--secondary-color);
+    border-radius: 5px;
+}
+
 /* Footer Styles */
 .footer {
     background-color: var(--primary-color);
     color: #fff;
     padding: 20px 0;
+    text-align: center;
+    position: relative;
+     margin-top: auto; /* Pushes the footer to the bottom if there is not enough content */
 }
 
 .footer a {
@@ -58,6 +109,48 @@ a:hover {
     color: var(--secondary-color);
 }
 
+.footer .social-icon {
+    width: 30px;
+    height: 30px;
+    margin: 0 5px;
+    display: inline-block;
+    transition: opacity 0.2s;
+}
+
+.footer .footer-heading {
+    cursor: pointer;
+}
+
+.footer .footer-links {
+    display: none;
+}
+
+.footer .social-icon img {
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    transition: opacity 0.2s;
+}
+.btn-outline-success {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+.btn-outline-success svg {
+    margin-right: 8px;
+}
+
+.btn-outline-success:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 /* Button Styles */
 .btn-primary {
     background-color: var(--primary-color);
@@ -78,6 +171,19 @@ a:hover {
     background-color: var(--link-hover-color);
     border-color: var(--link-hover-color);
 }
+.logo-text {
+    font-family: 'Pacifico', cursive; /* Use a distinctive font */
+    font-size: 1.5em; /* Increase font size */
+    color: #fff; /* White color */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+    letter-spacing: 1px; /* Add spacing between letters */
+    transition: color 0.3s, text-shadow 0.3s; /* Smooth transition */
+}
+
+.logo-text:hover {
+    color: var(--secondary-color); /* Change color on hover */
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7); /* Enhance shadow on hover */
+}
 
 /* Form Styles */
 .form-control {
@@ -92,6 +198,15 @@ a:hover {
 /* Card Styles */
 .card {
     border: 1px solid var(--secondary-color);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.card-body {
+    flex-grow: 1;
 }
 
 .card-header {
@@ -99,10 +214,16 @@ a:hover {
     color: #fff;
 }
 
+/* Card Hover Effect */
+.card:hover {
+    transform: translateY(-10px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
 /* Custom Classes */
 .bg-primary-custom {
     background-color: var(--primary-color) !important;
-    color: #fff;
 }
 
 .bg-secondary-custom {
@@ -148,7 +269,7 @@ a:hover {
 
 .event-details {
     padding: 20px;
-    background-color: #fff;
+    background-color: var(--glass-bg);
     border: 1px solid var(--secondary-color);
     border-radius: 5px;
 }
@@ -168,7 +289,7 @@ a:hover {
 
 .registration-page .registration-form,
 .login-page .login-form {
-    max-width: 400px;
+    max-width: 500px;
     margin: 0 auto;
 }
 
@@ -199,9 +320,9 @@ a:hover {
 }
 
 .social-icon img {
-    width: 10px; /* Ensuring the image fills the container */
-    height: 10px; /* Maintaining the aspect ratio */
-    display: inline-block; /* Removing any extra space below the image */
+    width: 100%;
+    height: 100%;
+    display: inline-block;
 }
 
 /* Custom Styles for the Search Form */
@@ -217,4 +338,39 @@ a:hover {
 /* Additional styles for the search icon */
 #searchIcon {
     cursor: pointer;
+}
+/* Existing CSS above... */
+.no-events {
+    padding-left: 20px; /* Adjust the value to the desired tab space */
+    margin-left: 20px;  /* Optional: Adjust if you want additional margin */
+}
+
+/* Flexbox styles to make cards uniform in height */
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card {
+    flex: 1 1 calc(33.333% - 20px); /* 3 cards per row with a gap */
+    display: flex;
+    flex-direction: column;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
+.card-title,
+.card-text {
+    margin-bottom: auto;
+}
+
+.card-footer {
+    align-self: flex-end;
+    width: 100%;
 }
