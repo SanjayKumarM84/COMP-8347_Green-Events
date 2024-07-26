@@ -22,13 +22,13 @@
             <ul class="navbar-nav ml-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                    <a class="nav-link" href="{% url 'create_event' %}">Create Event</a>
+                    <a class="nav-link" href="{% url 'create_event' %}" style="color: white;">Create Event</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'feedback' %}">Give Feedback</a>
+                    <a class="nav-link" href="{% url 'feedback' %}" style="color: white;">Give Feedback</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'user_history' %}">Past Events</a>
+                    <a class="nav-link" href="{% url 'user_history' %}" style="color: white;">Past Events</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'view_profile' %}">
