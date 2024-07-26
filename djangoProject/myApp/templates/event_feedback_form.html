@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-3">
+    <h2>Feedback for {{ event.name }}</h2>
+    <style>
+        /* Enhanced Star Rating Styles with High Specificity */
+.star-rating label {
+    color: #ccc; /* Default star color, ensure this is visible */
+    transition: color 0.2s ease !important; /* Smooth transition for hover effects, marked important */
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #fff !important; /* White color for hover, marked important to override other styles */
+}
+
+.star-rating input[type="radio"]:checked ~ label {
+    color: #ffff00 !important; /* Yellow color for selected stars, marked important */
+}
+    </style>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="{{ form.feedback_text.id_for_label }}">{{ form.feedback_text.label }}</label>
+            {{ form.feedback_text }}
+        </div>
+        <div class="form-group">
+            <label>{{ form.star_rating.label }}</label>
+            {% for choice in form.star_rating %}
+            <label class="star-rating">
+                {{ choice.tag }} &#9733;  <!-- Unicode star character -->
+            </label>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Feedback</button>
+    </form>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const stars = document.querySelectorAll('.star-rating label');
+    const radioButtons = document.querySelectorAll('.star-rating input[type="radio"]');
+
+    function updateColors() {
+        stars.forEach((star, index) => {
+            if (radioButtons[index].checked) {
+                star.style.color = '#ffff00'; // Yellow color for selected stars, forcefully applied
+            } else {
+                star.style.color = '#ccc'; // Default color
+            }
+        });
+    }
+
+    stars.forEach((star, index) => {
+        star.addEventListener('mouseover', function() {
+            // Set all previous stars including this to white
+            for (let i = 0; i <= index; i++) {
+                stars[i].style.color = '#fff'; // Force white color for hover
+            }
+        });
+
+        star.addEventListener('mouseout', updateColors);
+
+        // Update colors upon selection
+        radioButtons[index].addEventListener('change', updateColors);
+    });
+
+    // Initial color update on page load
+    updateColors();
+});
+</script>
+{% endblock %}
