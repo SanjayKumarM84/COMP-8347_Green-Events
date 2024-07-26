@@ -222,19 +222,16 @@ def feedback_view(request):
 # View function used for event feedback
 @login_required
 def event_feedback_view(request, event_id):
-    event = get_object_or_404(Event, id=event_id) # Querying event data based on id
+    event = get_object_or_404(Event, id=event_id)
     if request.method == 'POST':
-        # User input data will be captured using django forms
         form = EventFeedbackForm(request.POST)
         if form.is_valid():
-            # If the form is valid, then user input data will be saved in the database and user will be redirected to home page
             feedback = form.save(commit=False)
             feedback.user = request.user
             feedback.event = event
             feedback.save()
-            return redirect('home')  # Redirect to the event detail page
+            return redirect('home')
     else:
-        # For GET method
         form = EventFeedbackForm()
 
     return render(request, 'event_feedback_form.html', {'form': form, 'event': event})

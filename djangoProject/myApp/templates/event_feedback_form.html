@@ -3,70 +3,25 @@
 {% block content %}
 <div class="container mt-3">
     <h2>Feedback for {{ event.name }}</h2>
-    <style>
-        /* Enhanced Star Rating Styles with High Specificity */
-.star-rating label {
-    color: #ccc; /* Default star color, ensure this is visible */
-    transition: color 0.2s ease !important; /* Smooth transition for hover effects, marked important */
-}
-
-.star-rating label:hover,
-.star-rating label:hover ~ label {
-    color: #fff !important; /* White color for hover, marked important to override other styles */
-}
-
-.star-rating input[type="radio"]:checked ~ label {
-    color: #ffff00 !important; /* Yellow color for selected stars, marked important */
-}
-    </style>
     <form method="post">
         {% csrf_token %}
         <div class="form-group">
             <label for="{{ form.feedback_text.id_for_label }}">{{ form.feedback_text.label }}</label>
             {{ form.feedback_text }}
         </div>
-        <div class="form-group">
+        <div class="form-group d-flex align-items-center">
             <label>{{ form.star_rating.label }}</label>
-            {% for choice in form.star_rating %}
-            <label class="star-rating">
-                {{ choice.tag }} &#9733;  <!-- Unicode star character -->
-            </label>
-            {% endfor %}
+            <div class="star-rating ml-2">
+                <fieldset class="rating">
+                    <input type="radio" id="star5" name="star_rating" value="5" /><label class="full" for="star5" title="Awesome - 5 stars"></label>
+                    <input type="radio" id="star4" name="star_rating" value="4" /><label class="full" for="star4" title="Pretty good - 4 stars"></label>
+                    <input type="radio" id="star3" name="star_rating" value="3" /><label class="full" for="star3" title="Meh - 3 stars"></label>
+                    <input type="radio" id="star2" name="star_rating" value="2" /><label class="full" for="star2" title="Kinda bad - 2 stars"></label>
+                    <input type="radio" id="star1" name="star_rating" value="1" /><label class="full" for="star1" title="Sucks big time - 1 star"></label>
+                </fieldset>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary">Submit Feedback</button>
+        <button type="submit" class="btn btn-outline-primary">Submit Feedback</button>
     </form>
 </div>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const stars = document.querySelectorAll('.star-rating label');
-    const radioButtons = document.querySelectorAll('.star-rating input[type="radio"]');
-
-    function updateColors() {
-        stars.forEach((star, index) => {
-            if (radioButtons[index].checked) {
-                star.style.color = '#ffff00'; // Yellow color for selected stars, forcefully applied
-            } else {
-                star.style.color = '#ccc'; // Default color
-            }
-        });
-    }
-
-    stars.forEach((star, index) => {
-        star.addEventListener('mouseover', function() {
-            // Set all previous stars including this to white
-            for (let i = 0; i <= index; i++) {
-                stars[i].style.color = '#fff'; // Force white color for hover
-            }
-        });
-
-        star.addEventListener('mouseout', updateColors);
-
-        // Update colors upon selection
-        radioButtons[index].addEventListener('change', updateColors);
-    });
-
-    // Initial color update on page load
-    updateColors();
-});
-</script>
 {% endblock %}

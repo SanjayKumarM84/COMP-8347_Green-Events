@@ -2,6 +2,7 @@ from django import forms
 from .models import Event, Profile, Feedback, EventFeedback
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .widgets import StarRatingWidget
 
 #--------------------------------------------------------------------
 #Worked by Bhuvanesh
@@ -63,7 +64,7 @@ class EventFeedbackForm(forms.ModelForm):
         fields = ['feedback_text', 'star_rating']
         widgets = {
             'feedback_text': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
-            'star_rating': forms.RadioSelect()
+            'star_rating': StarRatingWidget()
         }
         labels = {
             'feedback_text': 'Feedback',
