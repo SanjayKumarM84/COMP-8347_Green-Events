@@ -14,7 +14,7 @@
     {% if user.is_authenticated %}
     <button id="registerBtn" class="btn btn-success">Register</button>
     {% else %}
-    <a href="{% url 'login' %}?next={% url 'event_detail' event.id %}" class="btn btn-primary">Login to Register</a>
+    <a href="{% url 'login' %}?next={% url 'event_detail' event.id %}" class="btn btn-outline-primary">Login to Register</a>
     {% endif %}
 
     <div id="popupContainer"></div> <!-- Container for popup messages -->
