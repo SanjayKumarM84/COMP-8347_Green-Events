@@ -161,7 +161,6 @@ a:hover {
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7); /* Enhance shadow on hover */
 }
 
-
 /* Form Styles */
 .form-control {
     border: 1px solid var(--secondary-color);
@@ -176,6 +175,14 @@ a:hover {
 .card {
     border: 1px solid var(--secondary-color);
     border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.card-body {
+    flex-grow: 1;
 }
 
 .card-header {
@@ -194,7 +201,6 @@ a:hover {
 .bg-primary-custom {
     background-color: var(--primary-color) !important;
 }
-
 
 .bg-secondary-custom {
     background-color: var(--secondary-color) !important;
@@ -313,4 +319,34 @@ a:hover {
 .no-events {
     padding-left: 20px; /* Adjust the value to the desired tab space */
     margin-left: 20px;  /* Optional: Adjust if you want additional margin */
+}
+
+/* Flexbox styles to make cards uniform in height */
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card {
+    flex: 1 1 calc(33.333% - 20px); /* 3 cards per row with a gap */
+    display: flex;
+    flex-direction: column;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
+.card-title,
+.card-text {
+    margin-bottom: auto;
+}
+
+.card-footer {
+    align-self: flex-end;
+    width: 100%;
 }
