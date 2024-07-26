@@ -13,7 +13,9 @@
     --glass-border: rgba(46, 139, 87, 0.3); /* Semi-transparent Sea Green */
     --glass-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
 }
-
+html {
+    height: 100%; /* Ensures the html element covers the full height */
+}
 /* Global Styles */
 body {
     background-color: var(--background-color);
@@ -26,7 +28,9 @@ body {
     font-family: 'system-ui', -apple-system;
     min-height: 100vh; /* Ensures the body covers the full viewport height */
     margin: 0; /* Removes any default margin */
-    display: block; /* Make sure the body is displayed */
+
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
 }
 
 a {
@@ -94,6 +98,7 @@ a:hover {
     padding: 20px 0;
     text-align: center;
     position: relative;
+     margin-top: auto; /* Pushes the footer to the bottom if there is not enough content */
 }
 
 .footer a {
