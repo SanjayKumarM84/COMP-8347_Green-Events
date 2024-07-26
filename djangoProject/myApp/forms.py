@@ -3,20 +3,8 @@ from .models import Event, Profile, Feedback, EventFeedback
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-
-class EventForm(forms.ModelForm):
-    class Meta:
-        model = Event
-        fields = ['name', 'description', 'eventDate', 'location', 'agenda', 'speakers', 'image', 'total_num_of_seats']
-
-
-# class UserRegistrationForm(UserCreationForm):
-#     email = forms.EmailField()
-#
-#     class Meta:
-#         model = User
-#         fields = ['username', 'email', 'password1', 'password2']
-
+#--------------------------------------------------------------------
+#Worked by Bhuvanesh
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField()
@@ -36,6 +24,9 @@ class UserRegistrationForm(UserCreationForm):
         return user
 
 
+#--------------------------------------------------------------------
+# Worked By Jahnavi
+
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
@@ -47,6 +38,9 @@ class ProfileForm(forms.ModelForm):
         model = Profile
         fields = ['bio', 'pronouns', 'phone_number', 'profile_picture']
 
+
+#--------------------------------------------------------------------
+# Worked By Aamani
 
 class FeedbackForm(forms.ModelForm):
     name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
@@ -75,3 +69,11 @@ class EventFeedbackForm(forms.ModelForm):
             'feedback_text': 'Feedback',
             'star_rating': 'Rating'
         }
+
+#--------------------------------------------------------------------
+#Worked by Sanjay
+
+class EventForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = ['name', 'description', 'eventDate', 'location', 'agenda', 'speakers', 'image', 'total_num_of_seats']

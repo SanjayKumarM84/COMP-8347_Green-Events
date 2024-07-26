@@ -1,8 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+#--------------------------------------------------------------------
+# Worked By Jahnavi
 
-# Create your models here.
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
@@ -17,6 +18,8 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
+#---------------------------------------------------------------------------------------------------------
+#Worked by Sanjay
 
 class Event(models.Model):
     name = models.CharField(max_length=255)
@@ -37,13 +40,8 @@ class Event(models.Model):
         self.remaining_seats = self.total_num_of_seats - self.registered_seats
         super().save(*args, **kwargs)
 
-class Feedback(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_feedbacks')
-    feedback_text = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Feedback by {self.user.username} on {self.created_at.strftime('%Y-%m-%d %H:%M')}"
+#--------------------------------------------------------------------
+#Worked by Bhuvanesh
 
 class Registration(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
@@ -53,6 +51,17 @@ class Registration(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.event.name}"
+
+#--------------------------------------------------------------------
+# Worked By Aamani
+
+class Feedback(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_feedbacks')
+    feedback_text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Feedback by {self.user.username} on {self.created_at.strftime('%Y-%m-%d %H:%M')}"
 
 
 class EventFeedback(models.Model):
