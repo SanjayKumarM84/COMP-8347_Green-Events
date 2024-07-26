@@ -3,7 +3,7 @@
 
 /* Custom Colors */
 :root {
-    --primary-color: #2E8B57; /* Sea Green */
+    --primary-color: rgb(46, 139, 87); /* Sea Green */
     --secondary-color: #3CB371; /* Medium Sea Green */
     --background-color: #E8F5E9; /* Light Green */
     --text-color: #2F4F4F; /* Dark Slate Gray */
@@ -17,9 +17,16 @@
 /* Global Styles */
 body {
     background-color: var(--background-color);
+    background-image: url("/media/profile_pictures/cool-background.png");
+    background-size: cover; /* Ensures the image covers the entire background */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed; /* Keeps the background fixed while scrolling */
     color: var(--text-color);
     font-family: 'system-ui', -apple-system;
-    display: none;
+    min-height: 100vh; /* Ensures the body covers the full viewport height */
+    margin: 0; /* Removes any default margin */
+    display: block; /* Make sure the body is displayed */
 }
 
 a {
@@ -42,14 +49,20 @@ a:hover {
     padding: 15px;
 }
 
-/* Navbar Styles */
+/* Navbar Styles with Glass Effect */
 .navbar {
-    background-color: var(--primary-color);
-    transition: background-color 0.5s ease;
+    background: var(--glass-bg); /* Semi-transparent background */
+    border: 1px solid var(--glass-border); /* Semi-transparent border */
+    backdrop-filter: blur(10px); /* Blur effect */
+    box-shadow: var(--glass-shadow); /* Soft shadow */
+    border-radius: 10px; /* Rounded corners */
+    padding: 15px; /* Padding */
+    transition: background-color 0.5s ease; /* Smooth transition */
 }
 
+
 .navbar.bg-dark {
-    background-color: #333 !important;
+    background-color: rgba(51, 51, 51, 0.1) !important;
 }
 
 .navbar-brand,
@@ -161,7 +174,6 @@ a:hover {
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7); /* Enhance shadow on hover */
 }
 
-
 /* Form Styles */
 .form-control {
     border: 1px solid var(--secondary-color);
@@ -176,6 +188,14 @@ a:hover {
 .card {
     border: 1px solid var(--secondary-color);
     border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.card-body {
+    flex-grow: 1;
 }
 
 .card-header {
@@ -194,7 +214,6 @@ a:hover {
 .bg-primary-custom {
     background-color: var(--primary-color) !important;
 }
-
 
 .bg-secondary-custom {
     background-color: var(--secondary-color) !important;
@@ -313,4 +332,34 @@ a:hover {
 .no-events {
     padding-left: 20px; /* Adjust the value to the desired tab space */
     margin-left: 20px;  /* Optional: Adjust if you want additional margin */
+}
+
+/* Flexbox styles to make cards uniform in height */
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card {
+    flex: 1 1 calc(33.333% - 20px); /* 3 cards per row with a gap */
+    display: flex;
+    flex-direction: column;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
+.card-title,
+.card-text {
+    margin-bottom: auto;
+}
+
+.card-footer {
+    align-self: flex-end;
+    width: 100%;
 }
