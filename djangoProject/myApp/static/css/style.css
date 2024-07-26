@@ -3,7 +3,7 @@
 
 /* Custom Colors */
 :root {
-    --primary-color: #2E8B57; /* Sea Green */
+    --primary-color: rgb(46, 139, 87); /* Sea Green */
     --secondary-color: #3CB371; /* Medium Sea Green */
     --background-color: #E8F5E9; /* Light Green */
     --text-color: #2F4F4F; /* Dark Slate Gray */
@@ -42,14 +42,20 @@ a:hover {
     padding: 15px;
 }
 
-/* Navbar Styles */
+/* Navbar Styles with Glass Effect */
 .navbar {
-    background-color: var(--primary-color);
-    transition: background-color 0.5s ease;
+    background: var(--glass-bg); /* Semi-transparent background */
+    border: 1px solid var(--glass-border); /* Semi-transparent border */
+    backdrop-filter: blur(10px); /* Blur effect */
+    box-shadow: var(--glass-shadow); /* Soft shadow */
+    border-radius: 10px; /* Rounded corners */
+    padding: 15px; /* Padding */
+    transition: background-color 0.5s ease; /* Smooth transition */
 }
 
+
 .navbar.bg-dark {
-    background-color: #333 !important;
+    background-color: rgba(51, 51, 51, 0.1) !important;
 }
 
 .navbar-brand,
