@@ -2,6 +2,7 @@ from django import forms
 from .models import Event, Profile, Feedback, EventFeedback
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .widgets import StarRatingWidget
 
 #--------------------------------------------------------------------
 #Worked by Bhuvanesh
@@ -63,7 +64,7 @@ class EventFeedbackForm(forms.ModelForm):
         fields = ['feedback_text', 'star_rating']
         widgets = {
             'feedback_text': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
-            'star_rating': forms.RadioSelect()
+            'star_rating': StarRatingWidget()
         }
         labels = {
             'feedback_text': 'Feedback',
@@ -77,3 +78,13 @@ class EventForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = ['name', 'description', 'eventDate', 'location', 'agenda', 'speakers', 'image', 'total_num_of_seats']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'eventDate': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'location': forms.TextInput(attrs={'class': 'form-control'}),
+            'agenda': forms.Textarea(attrs={'class': 'form-control'}),
+            'speakers': forms.TextInput(attrs={'class': 'form-control'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+            'total_num_of_seats': forms.NumberInput(attrs={'class': 'form-control'}),
+        }

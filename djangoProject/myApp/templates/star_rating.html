@@ -1,0 +1,8 @@
+<!-- templates/widgets/star_rating.html -->
+
+{% for group, options, index in widget.optgroups %}
+    {% for option in options %}
+        <input type="radio" id="star{{ option.value }}" name="{{ widget.name }}" value="{{ option.value }}" {% if option.value == widget.value %}checked{% endif %}>
+        <label class="{{ 'full' if option.value|float_is_integer else 'half' }}" for="star{{ option.value }}" title="{{ option.label }}"></label>
+    {% endfor %}
+{% endfor %}
