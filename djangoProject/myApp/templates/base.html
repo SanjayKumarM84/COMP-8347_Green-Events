@@ -23,9 +23,11 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 {% if user.is_authenticated %}
-                    <li class="nav-item">
-                    <a class="nav-link" href="{% url 'create_event' %}" style="color: white;">Create Event</a>
-                </li>
+                    {% if user.is_staff %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'create_event' %}" style="color: white;">Create Event</a>
+                        </li>
+                        {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'feedback' %}" style="color: white;">Give Feedback</a>
                 </li>
